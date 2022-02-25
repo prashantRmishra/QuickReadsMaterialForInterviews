@@ -1,0 +1,37 @@
+the appoinment feature is available with patient and the nurse/doctor
+there will be three dashboard
+-------
+changes that the patient can propose to change
+--------
+ex : name , phone no ,age, weight (information that are tangible) etc
+patient cant requst for change of the ailment
+-----mandatory modules that needs to be created
+inbox page --- for doctor,nurse
+patient visit module --capture data in offline as well
+Appointment schedules -- allows nurse and doctor to 
+			schecule and appointment (with outlook kind of calender) this has to be colorcoded.
+
+Patient portal--- patient to check his / her details
+admin---module for maintaining master data
+user---login,reset, password, register
+
+project flow 
+
+user/patient register--> adds basics demographic details---> schedules an appointment
+
+
+
+
+
+
+
+
+-----------------note mandatory features that needs to be implemented---------------------------
+focus on one module at one time 
+project should be responsive
+offline storage of the user/patient information
+csv export of the data.
+
+
+---questions that I have
+can we design our own logo 

@@ -1,0 +1,81 @@
+Activities 
+requirement gathering - jira,rally,azure boards
+analyzing requirement - jira,rally aure boards
+code review - sonar/ whitesoure bolt/fxcop/resharper
+test panning - microsoft test manager/jira (they help in test planning and creating test caeses )
+compilation and packaging  - creating  a package that can be deployed like - ant/maven/gradle (for java)
+testing - unit/integration/system/load
+deployment - creating multiple environment
+provisioning - create infrastructure
+configuration management - ansible/puppet/chef
+feedback -
+STAKE HOLDERS IN DEVOPS
+----
+po: product owner
+scrum master
+devs
+QA team
+BA
+consultants
+----------
+there are certain solution that help to do all this ,
+asure devops is a end to end set of tools that helps us to do end to end automation .
+---------------------------------
+There are lots of devops solution tools likes jenkins , teamct, gitlab, etc.
+------------------------------
+JENKINS
+-----------
+scope of jenkins is-
+
+CI PIPELINE##
+coding 
+code review
+compilation
+packaging
+
+CD PIPELINE##
+testing
+deployment
+provisioning : creating infrastructure
+configuration management
+------------------------ 
+why should we use jenkins 
+-----
+it is open source (as no cost involved)
+it has plugins , it can work with all platforms python/java/ruby/.net/c++
+it is flexible and transparent. 
+cons--
+In general jenkins implementation may require additional efforts and time (example everything is already there in azure devops hence development is faster in azure devops)
+-----------------------------
+WHAT IS CI AND CD PIPELINE 
+ 
+CI PIPELINE 
+continuous integration pipeline
+pull source code (c#,java,python)----->code analysis------> compile----->unit test cases executed/integration--->generate code coverage result and publish---->packaging
+
+
+CD PIPELINE
+continuous deployment pipeline
+---get the deployable package --> code analysis that works on raw or compiled code (example whitesource bolting)
+
+
+OR
+continuous delivery pipeline
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

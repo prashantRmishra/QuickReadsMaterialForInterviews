@@ -1,0 +1,106 @@
+1.how can we make variable declaration mandatory in js
+2.Which of the following code will achieve the following output:     “a batter hit a ball with a bat”
+Select one:
+a. var s = "the batter hit the ball with the bat";var re = /the/g;var result = s.replace(re, "a");document.write(result);
+b. var s = "the batter hit the ball with the bat";var re = “the”;var result = s.replace(re, "a");document.write(result); 
+c.  var s = "the batter hit the ball with the bat";var re = /the/;var result = s.replace(re, "a");document.write(result);
+d. var s = "the batter hit the ball with the bat";var re = /the/g;s.replace(re, "a");document.write(s);
+3. oneliner code to concatenate all the strings in javascript
+jquery
+1.which function is used to retrive json object from the server
+2.Which of the following is the lowest level JQuery Ajax function?
+Select one:
+a. post()
+b. ajax()
+c. getXML() 
+d. getJson()
+3.Which jquery event would you use to highlight table row when mouse is on top of it and remove highlight when mouse is out of it.
+Select one:
+a. Mouseover 
+b. Mousemove
+c. Mousetoggle
+d. Hover
+4.The jQuery method used to get all ancestors of the matched set of elements is -
+Select one:
+a. None of the above
+b. offsetParent() method
+c. parents() method (ANS)
+d. parent() method 
+5.The correct syntax for selecting the first paragraph element with id p1 is -
+Select one:
+a. $("p.p1:first")
+b. $("p#p1:first") (ANS)
+c. None of the above
+d. $("p1#p:first") 
+6.----------------------------event can be used to detect changes in list, combo box selection
+Select one:
+a. hover
+b. change
+c. select
+d. on 
+7.------------------- method is used to bind a callback method for an event  for DOM elements added at runtime
+Select one:
+a. bindEvent 
+b. On
+c. Delegate
+d. click
+9.------------ function can be used to retrieve a json object from server.
+Select one:
+a. $.load()
+b. $.get()
+c. $.getJSON() 
+d. All the above
+
+java related question that I could not solve while attempting the test
+What is not the use of “this” keyword in Java?
+Select one:
+a. Passing itself to method of the same class
+b. Referring to the instance variable when local variable has the same name
+c. Passing itself to another method
+d. Calling another constructor in constructor chaining 
+
+What will be the result of attempting to compile and run the following program?public class MyClass extends Thread {public MyClass(String s) { msg = s; }String msg;public void run() {System.out.println(msg);}public static void main(String[] args) {new MyClass("Hello");new MyClass("World");}}
+Select one:
+a. The program will compile without errors and will simply terminate without any output when run. 
+b. The program will fail to compile. 
+c. The program will compile without errors and will print Hello and World when run, but the order is unpredictable. 
+d. The program will compile without errors and will print Hello and World, in that order, every time the program is run.  
+
+Which of the following methods return the number of rows affected by the query? 
+Select one:
+a. executeQuery() 
+b. execute()  
+c. executeUpdate() 
+d. getResultSet() 
+
+
+Assuming class Employee is there with Employee constructor taking id,name,sal in it…class A{public static void main(String[] args){Employee e = new Employee(1,”ram”,20000);Employee e1=e;if(e==e1){System.out.println(“false”);}else{System.out.println(“true”);}}}What will be the output?
+Select one:
+a. RuntimeException 
+b. CompilerError
+c. True
+d. False 
+
+
+Given a piece of codeimport java.util.*;class UseCollection{public static void main(String[] args){TreeSet<Employee> t = new TreeSet<Employee>();t.add(new Employee(5,”ram”,30000));Employee e1=new Employee(2,”shyam”, 40000);t.add(e1);t.add(new Employee(1,”sita”,60000));System.out.println(t);}}Assuming Employee class is not implementing Comparable interface, what willbe the output?
+Select one:
+a. None of the above 
+b. Compiler error 
+c. Code runs fine and outputs employee details in sorted order  
+d. Runtime Exception 
+
+
+
+Pick up the true statement(s)class EmployeeDao{public void calculatePay(){if(…){throw new TaxException();}}}Class EmployeeMain {public static void main(String args[]){try{}Catch(TaxException te){…….}}
+Select one:
+a. CalculatePay   should be declared as calculatePay() throws TaxException 
+b. Class EmployeeDao should be declared as Class EmployeeDao throws TaxException  
+c. no need to say throws in employeedao because main is catching the exception 
+
+
+What is false about constructor?
+Select one:
+a. Constructors cannot be overloaded
+b. Java does not provide default copy constructor
+c. “this” and “super” can be used in a constructor 
+d. Constructors cannot be synchronized in Java

@@ -1,0 +1,205 @@
+Feature of java 8
+-------functional interface--------
+But before that what are nested classes in java ? 
+class within a class
+	class A{
+		class B{}
+	}
+----amonymous inner class------
+public interface Display{
+	public void display();
+}
+public class AnonymousDemo{
+	public static void main(string a[]){
+		Display d = new Display(){
+			@Override
+			public void display(){
+				sysout("display overridden");
+			}
+		}
+		d.display();
+	}
+}
+---------------
+---------functional interface ---------
+Has only one abstract method
+@FunctionalInterface // optional annotation
+public interface display{
+	public void display();
+}
+------------------
+1. Lambda expression
+(arguments)->{expression} // no argument is also fine ()->{expression or body}
+it can be called inside another method as argument 
+its nothing but a short snippet of code with param and excecution body with no method name;
+its is an implementation of the functional interface.
+-> called arrow token.
+
+Display d = (message)->{
+	sysout("display called from lambda expression with message");
+}
+d.display("simple message");
+-------
+we can remove the curly braces if the there is only one line of expression.
+()->expression;
+
+example 1: 
+interface StringLengthCal{
+	public int charCount(String str);
+}
+public class LambdaEx{
+	psvm(String a[]){
+		StringLengthCal strCal = str->return str.lenght();
+		Sysout(strCal.charCount("PrashantMishra"));
+	}
+}
+Example 2 : 
+public class LambdaExample{
+	psvm(String a[]){
+		List<String> list  = new ArrayList<>();
+		list.forEach(o->sysout(i)); // reduced to single line that could have taken multiple lines if 
+					     // used Iterator 
+	}
+}
+
+--------Scope resolution or method reference in java 8-----
+:: scope resolution operator
+public interface Display{
+	public void display();
+}
+public class MethodReference{
+	public void showMessage(){
+		sysout("show instance method");
+	}
+	public static void showMessages(){
+		sysout("show static method");
+	}
+	public MethodRefernce(){
+		sysout("message from constructor of the MethodReference class");
+	}
+	psvm(String s[]){
+		MethodReference mr = new MethodReference();
+		Display d = mr::showMessage();// instance reference
+		Display d2 = MethodReference::showMessages();// static reference
+		Display d3 = MethodReference:: new;// constructor reference
+
+	}
+}
+---------
+-------3 types of fuctinal interface-------
+Present in util package
+1  Bifunctional interface
+	takes two argument and gives result;
+2. Predicate interface 
+	Gives true or false result
+	has abstract method called boolean test();
+	public class LambdaEx4{
+		psvm(){
+			List<String> city = Arrays.asList(
+			"Mumbai","pune","banglore","raipur","mp");
+			//problem : list out all the cities that start with letter 'M'
+			//conventional way 
+			//using lambda expression
+			Predicate<String> p = (obj) -> obj.startsWith("M");
+			city.forEach((str) -> {
+			if(p.test(str))
+				System.out.println(str);
+			});
+
+		}
+	}
+3. Consumer Interface -----------
+	Takes one argumet and gives no result
+	has abstract method called accept();
+
+	public class LambdaEx3{
+		psvm(){
+			Consumer<String> consumer = (object)-> sysout(object); // lamda expression
+			consumer.accept("hello world");
+		}
+		
+	}
+	or
+	public class LambdaEx3{
+		psvm(){
+			Consumer<String> consumer = System.out::println;// method reference happned
+			consumer.accept("Hello world");
+		}
+	}
+--------lets sort a list using method reference--------
+let say the we have a 'list' of Integer
+Consumer<List<Integer>> consumer = Collections::sort;//method reference
+consumer.accept(list);
+so basically accept() of Consumer is overridden with sort() method and 
+then we call the 'accept()' method with 'consumer' variable;
+
+
+--------default method in java 8------------
+its a non-abstract method in interface and its not mendetary for implementing classes to override this method
+its is denoted by default keyword.
+---------------------------------Steam API-------------------------
+printing 
+//for loop
+list = Arrays.asList(2,3,4,54,3,55,6,7,66,4,2);
+for(Integer e: list) sysOut(e);
+//for each
+list.forEach(e->sysout(e));
+//stream
+list.stream().forEach(e->sysout(e));
+I can also print distinct values
+list.stream().distinct().forEach(e-> sysout(e));
+I can also filter values
+list.stream().filter(e-> e>44).forEach(e->sysout(e)); // print: 54\n55\n66
+//using method reference
+list.stream().filter(e->e%2==0).distinct().forEach(System.out::println); //2\n4\n6\n66
+// we can also modify the object that we are printing
+list.stream().filter(e->e%2==0).distinct().map(e->e+" ").forEach(System.out::print) 2 4 6 66
+//we can again store it in list
+List<Integer> list2 = list.stream().filter(e->e%2==0).distinct().collect(Collectors.toCollection(ArrayList::new)); // remember we are using constructor reference here.
+//Generating random numbers using stream() api's
+List<Integer> randomNumberList = Stream.generate(()->new Random().next().nextInt(100)).toList(); // nextInt(100) means generate random numbers between 0 to 100 ,but this will be stuck in loop as no limit is specified.
+//specifying a limit
+List<Integer> randomNumberList = Stream.generate(()->new Random().nextInt(100)).limit(10).toList(); // 10 random values between 0 and 100
+^ can also be written as 
+List<Integer> randomNumberList=Stream.generate(()->new Random().nextInt(100)).limit(10).collect(Collectors.toList());
+//Stream iterator
+List<Integer> listOfValues = IntStream.iterate(0,obj->obj+1).mapToObj(Integer::valueOf).limit(10).toList();// 0,1,2,3,4,5,6,7,8,9
+
+// filter books that start with j
+listOfBooks.stream().filter(l->l.getName().startsWith("j")).forEach(l->sysout(l.toString()));
+or we can store it in another List
+List<Book> bookList2 = listOfBooks.stream().filter(l->l.startsWith("j")).toList();
+// getting total cost of the books 
+double totalCost = listOfBook.stream().mapToDouble(Book::getPrice).reduce(0,(sum,price)->sum+price);
+sysout(totalCost);
+
+
+/*
+It totalcost
+   Non_fiction totalcost
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

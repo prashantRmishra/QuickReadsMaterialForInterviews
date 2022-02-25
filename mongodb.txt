@@ -1,0 +1,80 @@
+Values are stored in key value format
+NoSql: no structure
+We require only one primary key for every row and we can have any no. of columns
+	(So, we don't know if all the columns in a row will be filled)
+Data is not stored in a table, NoSql is a collction that stores properties 
+It does not require any schema 
+It can be used for distributed databases
+Used for Big data, real time apps
+
+why NoSql : 
+	Faster retrival time 
+	Load will not be on a single server
+
+For example if the columns are 
+flatno, city,state,pincode for table address (called collection in mongodb)
+
+2054 address
+{"flatno":4545,"city": "delhi"};
+{"houseno":344,"state":"maharashtra"};
+{"houseno":344,"state":"maharashtra","pincode": 453222};
+
+------commands 
+show dbs -- will show all the db
+use db_name // if the db_name is not present then mongodb will create it for you automatically
+db.table_name.insert({"userid":1,"name": "prashant"}); -- will insert the record in the table_name present in the db that you are using
+
+db.user.find().pretty() -- to see the records present in the user table in some readable format
+
+--to insert many data at once
+
+db.user.insertMany
+([
+	{"username": "abc", "password":"erf3"},
+	{"username": "sandeep", "password":"g3df"},
+	{"username": "ram", "password":"errrer"},
+	{},
+	{"userid": 2323, "username": "abc", "password":"erf3"},
+]);
+
+//updating the values using username  
+db.user.update({"username": "abc"},{$set: {"password":"pass123"}});// password will be updated where username is "abc"
+
+// remove or delete
+db.user.remove({"username":"abc"}); // it will drop the row where the username is "abc";
+
+// drop the table 
+db.user.drop();
+
+// sort based on a column name
+db.user.sort({"username:-1}).limit(1); // -1 is descending order and limit(1) you know what that is already
+
+
+
+
+------------integrating mongodb with spring api---------------------
+ 
+
+remove starter-jap and add mongodb dependency in pom.xml
+replace the @Entity annotation with @Document 
+replace CrudRepository with MongoRepository in Repo class
+
+in application properties
+spring.data.mongodb.host = localhost
+spring.data.mongodb.port= 27017
+spring.data.mongodb.database =db_name
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,64 @@
+why agile -----------
+all fuctionalities are delivered in a small chunks or features
+so customer doesn't have to wait to see the working product
+they can see small small chunks and functionality .
+It is -
+lightweight
+people based 
+there is no sigle agile methods
+the prcess is iterative , that is you will find few steps being repeated
+key priciple--------
+focus on customer value
+small batches (delivery in small batches)
+Small,Integrated Teams
+Small, Continuous Improvement.
+Agile menifeesto-----------
+Individuals and interaction 
+Working Software
+Customer Collaboration 
+Responding to changes 
+-----------
+
+Scrum in Nutshell------------
+name taken from a sport of rugby , where everyone in the team acts together to 
+move the ball down the field.
+its all about common sense.
+Its an agile process
+delivering highest value in the samllest time
+The business sets the priorities , 
+teams are self managed to deliver the highest quality product
+--------------steps involved
+Release Planning
+example release 001 in march 2022
+release 002 in june 2022
+release 003 in sep 0222
+let say we are in first week of dec say 1/12/21 , for march release 001 2022 
+release planing will happen in dec.
+similary for june release planning will be in march 2022 as the 001 will finish in march hence 002 will start in april hence planning has to be done in one month prior hence in march for 002 planning
+similarly so on and so forth
+
+
+
+who are all the people involved in poker planning 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

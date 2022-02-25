@@ -1,0 +1,54 @@
+for example you have loggers in different classes but this becomes 
+staggered way of handling logging as I will have created Logger classes in many 
+classes , but now need comes that few class don't need logging then we need to remove
+logging from those classes which will required changing in a lot of classes 
+which should be avoided.
+
+Hence Aop comes to picture
+it heps in logging
+declarative transaction
+auditing
+AOP : provides another way of thinking of the program structure.
+AOP breaks the program logic into distinct parts (called concerns). It is 
+used to increase modularity by cross-cutting concerns.
+
+A cross-cutting concern is a concern that can affect the whole application 
+and should be centralized in one location in code as possible, such as 
+transaction management, authentication, logging, security etc.
+
+AOp concepts 
+Aspect: modularization of concerns in the code example transaction management.
+	 It is a class that contains advices, joinpoints etc.
+Join point : a point during the excecution of a program.in spring aop join point 
+is always a method excecution
+advice: Action taken at a perticular join point by aspect
+
+point cuts : It is an expression language of AOP that matches join points.
+	for example the logging should take place at com.stackroute.repository
+	@Pointcut(com.stackroute.repository)
+
+Interceptor : It is an aspect that contains only one advice.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

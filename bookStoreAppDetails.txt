@@ -1,0 +1,35 @@
+JDBC Core Project: Submission 07/02/2022
+
+Model class
+
+	Book - bookId, bookName, author, genre, price
+	User - userId, username, password, email, phno
+	Recommend - recommendId, bookId, userId
+	Rating - ratingId, rating,bookId, userId
+	
+Modularize the code:
+	packages needed:
+		com.bookstore.model
+		com.bookstore.repo
+		com.bookstore.config
+		com.bookstore.service
+		com.bookstore.exceptions
+		com.bookstore
+
+	
+schema and tables // prashant
+dbConfig // vinay
+passordUtility // vinay
+User should register in the BookStoreApp to access it. //vinay
+User should login in the BookStoreApp to access it.//vinay
+User can see the list of books available after login.//prashant
+User can add the book to Recommend.//prashant
+User can see the list of books he recommended.//prashant
+User can see the entire list of books recommended. select * from recommend;//prashant
+User can rate a book.//prashant
+User can see the ratings of the books he rated.//vinay
+User can see the cumulative ratings of all the books.//vinay
+User can check the book details of any book he wishes.//vinay
+Only Admin can add the book, update the details, delete the book.//prashant
+Admin should be able to delete a user if required.//prashant
+Admin should see reports such as which book is doing well as per ratings and recommendation.//prashant

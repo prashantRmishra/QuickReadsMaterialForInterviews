@@ -1,0 +1,16 @@
+Bean injection can also be done with the annotation driven approach
+Config.java
+
+@Configuration // will mark the class as bean definition
+class Confing {
+	@Bean // inject the bean upon calling
+	//@Autowired
+	//Scope("singleton")
+	public Mentor getMentor(){
+		return new Mentor();
+	}
+}
+
+in main class
+ApplicationContext context = AnnotationConfigApplicationContext(Config.class);
+Mentor mentor = context.getBean(Mentor.class);

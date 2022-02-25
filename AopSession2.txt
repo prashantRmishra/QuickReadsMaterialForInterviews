@@ -1,0 +1,28 @@
+
+// Apart from the within() we can use following way as well .
+
+pointcut designation
+@Pointcut("execution (public Customer com.citius.controller.getAll())")
+
+or
+//You can omit the package name if the target class or interface is
+//located in the same package as this aspect
+execution(* ArithmeticCalculator.*(..))
+
+or we can have the pointcut directly in the joinpoint
+@Before(value="execution (public Customer com.citius.controller.getAll())")
+
+// wild card for the return type
+@Before(value="* com.citius.controller.getAll()")
+// with parameter it can be used for add(int a),add(int a, int b), add(int a,int b ,int c) and so on
+@Before(value = "* com.citius.controller.add(..)")
+
+
+// directly calling for the folder or package 
+// so all the class methods in the controller folder with the parameter can be executed 
+@Before(value = "* com.citius.controller.*(..)")
+// or
+@Before(value = "* com.citius..*(..)")
+//similarly you can do for After, Around
+
+// so within will track anything but execution is specifically used for methods in a class.

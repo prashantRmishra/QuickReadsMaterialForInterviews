@@ -1,0 +1,28 @@
+collection interface
+defined from jdk 1.2 onwards
+represents single unit of object
+Its a framework that provides ready-made architecture
+--------------
+it can be used to perform all the ds algorithm
+It reduces the no of lines of codes that we write, they are resizable.
+
+
+List:
+Allows ordered sequence of insertion 
+manupulation is faster in linked list 
+searching is faster in arrayList
+
+
+set:
+it stores the values in unordered manner
+can not allow duplicate values to be preesnt in the set
+only one null value allowed in the set (Hashset and treeSet)
+TreeSet
+uses tree for storage
+the elements are stored in ascending order
+uses red black tree
+
+the question that I have are 
+red black tree
+------------------bookStore app changes-----
+create an interface for all the methods in the repo class

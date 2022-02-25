@@ -1,0 +1,13 @@
+Mockito - mocking framework
+it will help us to not only test the service but also our controller layer.
+
+
+the layer where  I want to test should use @InjectMocks and if class uses 
+another class object using @Autowired we use @Mock annotation for that 
+
+
+and we use MockMvc class methods to test the controller
+like MockMvc.test()
+
+
+when(...).thenReturn(...);// it is mock implementation

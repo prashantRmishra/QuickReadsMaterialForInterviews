@@ -1,0 +1,20 @@
+you can use setter or constructor based dependency injection
+two types of container
+1.BeanFactory --depricated
+2.ApplicationContext
+ApplicationContext context = new ClassPathXmlApplicationContext("filename.xml");
+second way is 
+ApplicationContext context  = new FileSystemApplicationContext("absolutePathOfYourFile.xml");
+// and finally calling the context
+Customer customer = (Costomer)context.getBean("customer");
+
+setter based injection
+<bean id ="customer" class="com.citiustech.Customer">
+	<properties name="id" value="123"></properties>
+	.... and so on 
+</bean>
+
+constructor based injection
+<bean id = "customer2" class="com.citiustech.Customer">
+	<constructor-arg type="int" value="12" > </ constructor-arg>
+</bean>

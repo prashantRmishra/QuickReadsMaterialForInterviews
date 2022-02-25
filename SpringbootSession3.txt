@@ -1,0 +1,12 @@
+Webservice : communication between two devices that does not require user intervention
+
+the difference between soap and rest websevice
+soap is more rigid compared to rest
+rest uses http protocol: get/put/delete/post/option
+rest is more flexible (due to json as output) light, maintainable, extensible.
+
+can you send request data also that data is sent in your request body
+resonse
+your request body along with after the action has taken place take you to the redirect 
+post was successful response status
+data is sent with request

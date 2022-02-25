@@ -1,0 +1,2 @@
+Custom Exception handelling globally
+put your exception messages in the application properties and read it from there.

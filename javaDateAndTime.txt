@@ -1,0 +1,18 @@
+
+previously we had (still you can use this)
+Date d = new Date(); // 
+Now as in java 8 
+broadly they are classified in 
+LocalDateTime ldt = new LocalDateTime()
+	ldt.getMonth() //
+	ldt.plusDays(2) // day after tomorrow
+	ldt.getDayOfWeek();
+enums---------
+LocalDateTime today = LocalDateTime.now();
+	sysout(today); // todays date
+	sysout(today.plusDays(2)); // day afer tommorow
+Month month = today.getMonth();// current month
+DayOfWeek dW = today.getDayOfWeek(); // day of the current week
+
+LocalDate ld =  LocalDate.now();
+LocalTime lt = LocalTime.now();

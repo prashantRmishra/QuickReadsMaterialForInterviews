@@ -1,0 +1,131 @@
+streams
+streams of flow of information from the source to destination
+the source from which the data flows is termed as source and the 
+destination is called as sink
+classes in java streams 
+there are two abstract classes that are available in inputStream and other is OutputStream
+
+1. InputStream ---Read the data in the form of bytes.
+2. OutputStream--write data in the form of bytes.
+
+1. Reader class -  read the data from the file in the form of character
+2. Writer class - write the data to the file in the form of character
+
+1. ObjectInputStream
+2. ObjectOutputStream
+
+Reading and writing the data from and to the file is called Serialization
+JavaBean must implement Serialization interface
+
+flow of data 
+in form of byte == data is converted in byte and trasferred
+in form of character == data converted into character and trasferred
+
+public class Stream_Example{
+	public static void main(String a[]){
+		String company = "stackroute";
+		byte[] b = company.getBytes();
+		for(int i=0;i<b.length;i++){
+			System.out.println(b[i]+" ");
+		}
+		char[] c = company.toCharArray();
+		for(int i =0;i< c.length;i++){
+			System.out.println(c[i]+" ");
+		}
+	}
+}
+
+File class very very important 
+using this we can create a directory using the java code
+here the directory is also considered as file in java
+creating a directory---------
+File f = new File("/file/directory/localtion/filename.extension");
+or
+String dirName = "/home/prashant/demoFolder";
+File f = new File(dirName);
+f.mkdir(); /// will create the directory
+or
+File f= new File("fileName.txt");
+f.createNewFile();
+or
+File = new File(dirName,"fileName.txt");
+f.createNewFile();
+
+
+---------------Reading and writing the data from and to the file------------
+FileOutputStream --- creating stream to write the data to a specific file 
+FileInputStream --- creating stream to read the data from the file
+
+public class FileReadAndWrite{
+	public static void main(String s[]) throws IOException{
+		String name ="This is an example for reading and writing the data in form of byte";
+		byte[] b = name.getBytes();
+		FileOutputStream file = new FileOutputStream("file1.txt");
+		for(int i =0;i< b.length;i++){
+			file.write(b[i]);
+		}
+		System.out.println("file saved successfully");
+		///////////Reading the data back from the file 
+		FileInputStream fileInputStream = new FileInputStream("file1.txt");
+		int n = fileInputStream.available(); // it will give the no of characters present in the file 
+		for(int i =0;i< n;i++){
+			System.out.println((char)fileInputStream.read(i));
+		}
+	}
+}
+
+-----------
+Reading and writing using
+FileReader
+FileWriter
+
+
+
+
+----------lets binary serialize an employee class
+public class Employee implements Serializable{
+	private int empno;
+	private transient String name; // use transient keyword if you don't want to serialize it .
+	public int getEmpNo(){
+		return this.empno;
+	}
+	public void setEmpNo(int empNo){
+		this.empNo = empNo;
+	}
+	public String getName(){
+		return this.name;	
+	}
+	public String setName(String name){
+		this.name = name;
+	}
+}
+
+public class ObjectWriteReaderExample{
+	public static void main(String[] a){
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("employee.txt"));
+		Employee e = new Employee();
+		e.setEmpNo(101);
+		emp.setEname("prashant");
+		out.writeObject(e);
+		System.out.println("File retured");
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream("employee.txt"));
+		Employee e = (Employee)in.readObject();
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

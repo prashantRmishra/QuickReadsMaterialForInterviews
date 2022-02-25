@@ -1,0 +1,26 @@
+Unit testing - we test each block of test cases ex addUser(), updateUser(),deleteUser() etc
+Integration Testing - We test the entire module like
+ 	repository, service, controller.
+Sdlc - sofware development life cycle
+	requirement gathering
+	Requirement analysis
+	design
+	  -ui
+	    - functional design
+
+
+Assertions-------------
+assertTrue()
+assertFalse()
+assertNotNull()
+assertNull()
+assertEquals()
+
+fictures in junit
+setup() : for initialization of the objects of your code
+teardown(): you will make the objects null
+
+@BeforeAll
+@AfterAll
+@BeforeEach
+@AfterEach

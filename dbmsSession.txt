@@ -1,0 +1,2 @@
+RDBMS : It is the relationship between your data and your columns 
+how do we achive RDBMS : using mysql , oracle db, postgres db, access of microsoft.
