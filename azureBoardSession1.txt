@@ -1,0 +1,17 @@
+I will get status of the project that is going on using azure board
+advantages of devops  (we can use azure for this )
+what is azure :
+	cloud platform prvided by microsoft
+azure has 
+board , pipeline, repo
+
+User management
+appointment scheduling 
+Patient visit 
+Medication
+vital signs
+Observation
+diagnosis
+Allergies
+Reports
+

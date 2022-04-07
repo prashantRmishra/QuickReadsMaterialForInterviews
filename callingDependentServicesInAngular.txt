@@ -1,0 +1,8 @@
+this._configurationService.getSessionsByCampaign(this.campaignDBID).pipe(
+    mergeMap(sessionsArray => from(sessionsArray)),
+    mergeMap(session => 
+       this._configurationService.getDNByDBID(session.origDNDBID.value)
+    )
+)
+
+https://stackoverflow.com/questions/50752402/angular-6-dependent-service-calls

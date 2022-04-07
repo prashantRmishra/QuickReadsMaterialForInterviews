@@ -1,0 +1,2 @@
+it is case sensitive
+official name was ecma script
