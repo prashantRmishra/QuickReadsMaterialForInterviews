@@ -1,0 +1,12 @@
+1) What Is Spring Cloud?
+2) What is discovery server? Why there is a need of discovery server? How to set up discovery server?
+3) Monolithic Apps vs Microservices. What are the advantages of microservices?
+4) What are the challenges faced while using Microservices?
+5) How independent micro-services communicate with each other?
+6) Principles/characteristics of microservices?
+7) What is config server and why do we need it? How to implement it?
+8) What is API gateway? Explain advantages of API gateway.
+9) Why do we need hystrix? How to implement it? How to implement Hystrix Dashboard?
+10) What are different ways to deploy microservices?
+11) What is Domain Driven Design?  
+12) How to implement Distributed tracing in microservices? Why need of distributed tracing?   => Explain zipkin server  

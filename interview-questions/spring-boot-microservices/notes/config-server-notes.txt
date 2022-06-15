@@ -1,0 +1,132 @@
+Config Server:
+------------------
+
+Centralized Configuration: [Config Server]
+
+Why Centralized Configuration?
+----------------------------------------
+
+When we talk about microservices architecture, we visualize a large number of small microservices talking to each other.
+The interesting part is that each of these microservices can have its own configuration.
+
+Such configuration includes details such as:
+
+Application configuration
+logging configuration
+Database configuration
+Communication Channel Configuration - messaging queues and other infrastructure
+URLs of other microservices to talk to
+In addition, each microservice would have a separate configuration for different environments, such as development, qa and production.
+
+* Spring Boot provides feature "Profiling".
+
+dev
+prod
+test
+
+* What else if configuration changes.?
+-- If configuration changes, We need to update application.properties file. We need to repacked, redeploy our application. [All running instances of that application we need to redeploy with the new changes].
+
+Configuration for all microservices (for all environments) is stored at one place - a centralized configuration store.
+When a microservice needs its configuration, it provides an id at launch - a combination of microservice name and the environment.
+
+The centralize config server looks up the configuration and provides the configuration to the microservice.
+
+Setup Config Server:
+
+1) Create a new Spring boot starter project
+2) Add the dependencies:   config-server and eureka-discovery-client
+
+                              <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-server</artifactId>
+		</dependency>
+                             <dependency>
+                               	<groupId>org.springframework.cloud</groupId>
+	                              <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+                             </dependency>
+
+3) Add annotation @EnableConfigServer and @EnableEurekaClient
+4) Update application.properties file of config server. Specify the path where configurations are kept
+
+    server.port=8888
+
+    spring.profiles.active=native 
+   (Because you’re using the filesystem for storing application configuration information, you need to tell Spring Cloud configuration server to run with the     “native” profile)
+
+    spring.cloud.config.server.native.search-locations=file:///C:\\AmitF\\Training_Docs\\Spring_Training_Feb\\config\\{application}
+  
+  The important parameter in the configuration entry is the searchLocations attribute. This attribute provides a comma separated list of the directories for     each application that’s going to have properties managed by the configuration server.
+ 
+
+5) Add config-client dependency in all services.
+
+       <dependency>
+             <groupId>org.springframework.cloud</groupId>
+             <artifactId>spring-cloud-starter-config</artifactId>
+       </dependency>
+
+6) Update bootstrap.properties file and specify the location of config server.
+
+    spring.cloud.config.discovery.enabled=true
+    spring.cloud.config.discovery.serviceId=config-server
+    spring.cloud.config.uri=http://config-server
+
+
+* Spring Cloud Bus:
+
+-- Application when started reads configuration from config server, if we make any changes after microservices have run, then
+   we have to restart the services.
+-- Spring Cloud Bus helps us to push configuration changes to all microservices while they are running.
+-- Microservices do not need to be restarted to receive these updated configuration changes and to use these updated 
+   configurations.
+-- To use Spring Cloud bus, we don't need to create a separate standalone microservice. We have to just add 2 dependencies, 
+   spring cloud bus and actuators to config server and add spring cloud bus dependency to all microservices.   
+-- Microservices act as subscribers/listeners to receive updates from Spring cloud config server.
+-- Messaging technology is used to broadcast all the changes to all microservices. 
+-- Protocol use in communication is AMQP (Advanced Message Queuing Protocol). Asynchronous messaging.
+-- Message Broker need to be configured, RabbitMQ. It is an intermediary for messaging. It gives common platform to send and 
+   receive messages and for messages a safe place to live until they are received.
+-- We have to make configuration so that all microservices will be subscribed for configuration updates, Spring cloud bus can 
+   broadcast configuration changes and all our microservices will be able to recieve those changes.
+
+http://localhost:8888/actuator/bus-refresh
+POST request
+   
+   
+* Add Dependencies:
+
+-- spring cloud bus amqp
+-- actuators
+
+
+* Broadcast the changes:
+
+-- Once we update configuration in git repo, we need to tell spring cloud bus that its time to broadcast configuration changes
+   all microservices that have subscribed to these udpates.
+-- We can do this by sending http post request to an actuator endpoint called /bus-refresh.
+-- This will make spring cloud server to load new configuration from git repo and it also makes spring cloud bus to broadcast 
+   these configuration changes to all subscribed microservices.
+-- /bus-refresh endpoint helps to clear the refresh scope cache and rebind configuration properties in our microservices.
+-- Enable /bus-refresh endpoint.
+-- management.endpoints.web.exposure.include=bus-refresh in application.properties of config server.
+
+
+* Install and run RabbitMQ server
+
+-- Access dashboard of RabbirMQ => http://localhost:15672
+-- Enter username => guest , password => guest
+
+* For our application to communicate with spring cloud bus and spring cloud bus to communicate with all our microservices, 
+  Both need to connect to RabbitMQ.
+
+-- application.properties of config server.
+
+    spring.rabbitmq.host = localhost
+    spring.rabbitmq.port = 5672
+    spring.rabbitmq.username = guest
+    spring.rabbitmq.password = guest
+
+-- Add the above configuration to all microservices bootstrap.properties file.	
+
+

@@ -1,0 +1,117 @@
+Circuit Breaker Pattern => Hystrix
+--------------------------------------------
+
+   a) Fault Tolerance and Resiliance:
+   b) Hystrix
+   
+   a) Fault Tolerance: Fault Tolerance means, given an application, if there is specific fault, what is an impact of that fault?
+          How much tolerance a system has for a specific fault? For eg. If one microservice goes down what will happen to your microservice application?
+          Is your whole application goes down? OR some application functionality goes down? OR do you have some way of handling failures, so that there will be no impact at all.
+         *  What tolerance your system has for a specific fault is called as "Fault Tolerance".
+	
+   b) Resiliance: How many faults a system can tolerare, that indicates how resiliance it is. A system tries to recover from faults, OR Is there any mechanism so that it can correct itself, that part goes into Resiliance.
+   
+
+* Common Issues with Microservices?
+------------------------------------------------
+
+  a) What if one microservice goes down?
+  Solution:- We should have multiple instances for that microservice. (High Availability)
+
+  b) A microservice instance is slow?
+  Solution:   
+     
+			
+			
+		request ------> Thread -------> Process the request and gives response back     -- A	 
+		request ------> Thread -------> Process the request and gives response back     -- B
+		request ------> Thread -------> Process the request and gives response back     -- A 
+		request ------> Thread -------> Process the request and gives response back     -- A
+		request ------> Thread -------> Process the request and gives response back     -- A
+		
+		request ------> Thread -------> Process the request and gives response back     -- B
+		request ------> Thread -------> Process the request and gives response back     -- A
+		request ------> Thread -------> Process the request and gives response back     -- B
+		
+		----- If all the threads are utilized by A [due to slow microservice in A], no threads are available to process request for B.
+                
+
+     * What is a solution?
+        -- Setting timeouts.	
+        -- Partially solves the problem.
+
+       b) Circuit Breaker Pattern (Hystrix)
+       -- Its basic functionality is to interrupt current flow after fault is detected.
+       -- Unlike fuse, which operates once and then must be replaced, a circuit breaker can be reset (either manually or automatically) to resume normal operation.
+
+         1) Detect something is wrong.
+         2) Take temporary steps to avoid the situation getting worse.
+         3) Deactivate the "problem component" so that it doesn't affect downstream components.
+
+	   * When do circuit should break?
+  
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [SUCCESS]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [FAILED]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [SUCCESS] 
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [FAILED]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [FAILED]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [SUCCESS]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [FAILED]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [FAILED]
+
+    --- Last 'n' requests to consider for the decision - (for e.g. last 8 requests)
+    --- How many of those should fail? - (for e.g. 4 requests)
+    --- Timeout duration (for e.g. 3 seconds)
+    --- How long to wait(sleep window) - (for e.g. 10 seconds)
+
+  * If we are not sending requests to slow service after detecting the problem, what response we have to give back to the user?
+    -- Should we return error message to the user? 
+    -- We can return cached data.
+    -- We can give default response.
+ 
+  * Fallback - We need a fallback.
+    -- Throw an error
+    -- Save previous responses (cache) and use that when possible
+    -- Return a fallback "default" response.
+
+
+* What is Hystrix?:
+
+   -- Open source library originally created by Netflix.
+   -- Implements Circuit beaker pattern so we don't have to implement by our own.
+   -- Give the configuration parameters and it does the work.
+  
+* How to use Hystrix?
+
+  -- Add the maven spring-cloud-starter-netflix-hystrix dependency.
+  -- Add @EnableCircuitBreaker to the application class.
+  -- Add @HystrixCommand to the methods that need circuit breakers.
+  -- Configure Hystrix behavior.
+  
+  
+Hystrix Dashboard:
+-------------------
+-- Add binaries to classpath
+-- UI with display - What are the circuit breakers you have in your system, what are the circuits are opened, what are the circuits are closed, the number of requests that are coming in, the number of timed out happens. we get entire information about this in visual format.
+
+2 ways to set up this:
+----------------------------
+a) for individual application/microservice
+b) one separate application that can be setup for bunch of other microservices.  [ Using Turbine ]
+
+Add dependencies:
+a) spring-cloud-starter-netflix-hystrix-dashboard
+b) spring-boot-starter-actuator
+
+Add @EnableHystrixDashboard annotation to the application class.
+
+Add the below property to application.properties
+management.endpoints.web.exposure.include=hystrix.stream
+-- I am providing or exposing an end point in my application which streams hystrix data. I am exposing an endpoint hystrix.stream which is where the hystrix data is gonna be streamed and that hystrix dashboard is gonna do is gonna use to show the hystrix information.
+
+http://localhost:PORT/hystrix 
+
+Task: Create separate project for Hystrix Dashboard.
+
+
+

@@ -1,0 +1,32 @@
+1) What are basic building blocks of Angular application?
+2) What happends wehn "ng server" command is executed?
+3) How Angular application is bootstraped? OR Explain Angular application bootstrapping process.
+4) How to create production build? (Which utility Angular uses for building an application? => WebPack)
+5) How to change port number of Angular application?
+6) Explain data binding in Angular.  (Explain all types of bindings with syntax)
+7) What are structural directives?  (Explain NgFor, NgIf, NgSwitch)
+8) What is a pipe and its use? Explain built-in pipes of Angular.
+9) How to create custom pipe? Explain usecases.
+10) Explain different types of pipes. Difference between pure and impure pipe? What is a default type of pipe? How we can create impure pipe?
+11) How to create custom modules?
+12) Explain different types of loading strategies for module? What are the usecases where you will implement those strategies?
+13) How to implement lazy loading and pre-loading strategies? 
+14) How to implement routing in Angular? 
+15) What is a service and advantages of service? Explain DI concept in Angular
+16) Explain lifecycle hooks of Component? Difference between constructor and ngOnInit()? 
+17) Explain different injector levels for service? 
+18) Difference between promise and observable?
+19) What is observable? (Explain it thoroughly).
+20) How to read route parameters?
+      3 ways = > (Hint:  this.route.paramMap  |   this.route.params    |   this.route.snapshot) . Find the drawback of snapshot.
+21) How we can do the programmatic navigation in Angular?
+      (Hint: Use Router service.  This service has 2 methods navigate() and navigateByUrl().  Find the difference)
+      When to use programmatic 
+22) Explain different preloading strategies? How you can customize preloading strategy? Explain use case?
+23) Different ways of creating forms in Angular? (Explain template-driver and reactive forms)
+24) When to use template-driven forms and Reactive forms? 
+25) Validations => Cross field validation, Conditional validation, Angular validation.
+26) Can you create custom validator? How to create and apply it?
+27) What are the different ways to pass data between routes?
+28) Explain router guards and different router guards along with use cases.
+29) Explain Lifecycle methods of Angular Component.

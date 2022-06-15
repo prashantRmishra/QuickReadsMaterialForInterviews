@@ -1,0 +1,32 @@
+1) Difference between get() and load() method
+
+2) Difference between persist() and save() method
+
+3) Explain different states of Hibernate object.
+
+4) Explain component mapping
+
+5) Explain collection mapping
+
+6) Explain Inheritance strategies in Hhibernate
+    a) Single Table
+    b) Table per subclass
+    c) Table per concrete class
+
+7) Different types of caching in Hibernate
+
+8) Issues with JDBC? Why do we need ORM frameworks?
+
+9) Explain different types of associations
+    a) One to One
+    b) One to Many
+    c) Many to Many
+    Explain Both unidirectional and bidirectional.
+
+10) Explain HQL.
+
+11) Explain Criteria API and its use.
+
+12) What is named query and its use.
+
+ 

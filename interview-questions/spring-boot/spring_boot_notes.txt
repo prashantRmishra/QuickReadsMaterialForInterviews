@@ -1,0 +1,765 @@
+TOC
+-------
+
+* Creating Profiles in Spring Boot
+* Implementing configurations
+* Developing REST APIs
+* Content Negotiation and Generating Responses
+* Setting headers and handling exceptions
+* Perform CRUD operations
+* RestTemplate client
+* Integrating Spring Data JPA
+* Enabling CORS
+* Configuring Actuators
+* Using Swagger
+* Token based Authorization with JWT
+
+Why Spring Boot?
+-----------------------
+
+   Spring Based MVC Application:
+   -------------------------------
+
+     1) Create a Maven Project
+     2) Add required depenedencies inside pom.xml.
+     3) We need to configure component scanning, DispatcherServlet, ViewResolver, web jars (for serving static contents) etc...
+     4) For persistent layer logic, we use ORM frameworks like Hibernate / JPA, so we need to configure DataSource, EntityManager, SessionFactory, Transaction Manager etc...
+
+-- Spring framework is all about dependency injection. It makes it easy to develop loosely coupled application. it also makes application testable.
+-- Spring Boot eliminates the need of manual configuration with spring and spring mvc. We can use spring and spring mvc without needing a lot of configurations.
+-- Spring boot aims to enable production ready application in quick time.
+
+
+Q. How to create a spring boot application?
+------------------------------------------------------
+ 
+ 1) https://start.spring.io/  (Spring Initializer)
+ 2) Using IDEs
+ 3) Using Spring boot CLI
+
+Starter POMs
+---------------- 
+-- Starters are a set of convenient dependecy descriptors that we can include in our application. This will add all required dependencies and also take care about versions / compatibility with other dependencies.
+
+spring-boot-starter-web  
+spring-boot-starter-security
+spring-boot-starter-test
+spring-boot-starter-data-jpa
+spring-boot-starter-jdbc
+......
+......
+
+* Spring boot has embedded tomcat server (default server), so we don't need external server to deploy our application. Spring boot supports tomcat, jetty and undertow servers.  
+
+-- For servlet stack applications, the spring-boot-starter-web includes Tomcat by including spring-boot-starter-tomcat, but you can use spring-boot-starter-jetty or spring-boot-starter-undertow instead.
+-- For reactive stack applications, the spring-boot-starter-webflux includes Reactor Netty by including spring-boot-starter-reactor-netty, but you can use spring-boot-starter-tomcat, spring-boot-starter-jetty, or spring-boot-starter-undertow instead.
+
+Q. How we can change default Tomcat server? (We need to use jetty server instead).
+
+
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId>
+	<exclusions>
+		<!-- Exclude the Tomcat dependency -->
+		<exclusion>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+   		</exclusion>
+               </exclusions>
+</dependency>
+
+<!-- Use Jetty instead -->
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+
+
+APIs:
+--------
+
+    /employees   =>  GET   => To retrieve all employee details
+    /employees   =>  POST  => Add new Employee
+    /employees/:id   => GET  => Get employee details by Id        
+    /employees/:id   => PUT  => Update details of specific employee
+    /employees/:id   => DELETE  => Delete specific employee       
+
+@RestController
+@GetMapping  => GET 
+@PostMapping => POST
+@PutMapping => PUT
+@DeleteMapping => DELETE
+
+
+* Spring profiles:
+---------------------
+
+-- We have different environments for our application. For eg. Dev, Qa / test, Prod environments etc..
+-- Every environment has different configuration for eg. database config, logging configs etc..
+-- We have to make sure that application is loosely coupled with application configuration.
+-- Naming convention:
+                      application-{profile}.properties
+
+So we can create different application.properties files for different environments.
+
+For eg.    application-dev.properties    [ For Dev environment ]
+               application-prod.properties  [ For Prod environment ]
+               application-qa.properties     [ For qa / test environment ]
+
+-- At runtime, we can specify which profile to select by using a property, "spring.profiles.active" property.
+
+     spring.profiles.active=prod     => This will select application-prod.properties file
+     spring.profiles.active=dev      => This will select application-dev.properties file
+
+
+Advantages of YAML file over properties file:
+---------------------------------------------------------
+
+a) More clarity and human friendliness (More readable).
+b) Perfect for hierarchical configuration data.
+c) It supports enhanced capabilities such as maps, lists and scalar types. 
+d) We can define multiple profile configurations inside single yaml file.
+e) Reduction of repetition.
+
+Example of Lists and Maps:
+-------------------------------------
+
+We can configure lists and maps using YAML and properties file.
+
+Example of list:
+----------------------
+
+servers:
+  - www.abc.test.com
+  - www.xyz.test.com
+
+OR 
+
+servers: [www.abc.test.com, www.xyz.test.com]
+
+Equivalent properties file:
+---------------------------------
+
+servers[0]=www.abc.test.com
+servers[1]=www.xyz.test.com
+
+OR
+
+servers=www.abc.test.com, www.xyz.test.com
+
+MAP configurations:
+--------------------------
+
+YAML file:
+--------------
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydb
+    username: root
+    password: root
+
+Equivalent properties file:
+----------------------------------
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=root
+spring.datasource.password=root 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+@SpringBootApplication is a combination of @SpringBootConfiguration + @ComponentScan + @EnableAutoConfiguration.
+
+Indicates a configuration class that declares one or more @Bean methods and also triggers auto-configuration and component scanning. This is a convenience annotation that is equivalent to declaring @SpringBootConfiguration, @EnableAutoConfiguration and @ComponentScan.
+
+
+Q. Where is Spring Boot Auto Configuration implemented?
+-- All auto configuration logic is implemented in spring-boot-autoconfigure.jar. All auto configuration logic for mvc, data, jms and other frameworks is present in a single jar.
+
+-- Other important file inside spring-boot-autoconfigure.jar is /META-INF/spring.factories. This file lists all the auto configuration classes that should be enabled under the EnableAutoConfiguration key. A few of the important auto configurations are listed below.
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.springframework.boot.autoconfigure.aop.AopAutoConfiguration,\
+org.springframework.boot.autoconfigure.MessageSourceAutoConfiguration,\
+org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration,\
+org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration,\
+org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,\
+org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration,\
+org.springframework.boot.autoconfigure.jdbc.JndiDataSourceAutoConfiguration,\
+org.springframework.boot.autoconfigure.jdbc.XADataSourceAutoConfiguration,\
+org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration,\
+org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration,\
+org.springframework.boot.autoconfigure.security.SecurityFilterAutoConfiguration,\
+org.springframework.boot.autoconfigure.web.DispatcherServletAutoConfiguration,\
+org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration,\
+org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration,\
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     
+SpringApplication.run(StudentManagementApplication.class, args) is a static method. It returns an object of ConfigurableApplicationContext (I).
+
+SpringApplication => Class that can be used to bootstrap and launch a Spring application from a Java main method. 
+By default class will perform the following steps to bootstrap your application: 
+
+1) Create an appropriate ApplicationContext instance (depending on your classpath) 
+2) Register a CommandLinePropertySource to expose command line arguments as Spring properties 
+3) Refresh the application context, loading all singleton beans 
+4) Trigger any CommandLineRunner beans 
+
+In most circumstances the static run(Class, String []) method can be called directly from your main method to bootstrap your application: 
+ @Configuration
+
+ConfigurableApplicationContext ctx = SpringApplication.run(StudentManagementApplication.class, args);
+
+Thus spring container gets started once SpringApplication.run() method is called.
+
+Spring container once gets started is responsible for:
+
+1) Creating all objects: This is done by component scan. @SpringBootApplication is a combination of @Configuration + @ComponentScan + @EnableAutoConfiguration.
+2) Dependency Injection.
+3) Managing the life cycle of all beans.
+4) All default configurations are set up i.e. based on dependencies mentioned spring boot automatically sets up defaults. It makes use of intelligence that if we have included spring-starter-web then dispatcher servlet is auto-configured. (@EnableAutoConfiguration)
+5) An embedded servlet container is started. ( No need to set up a separate web server ) . Note embedded servlet container is launched only if the spring-boot-starter-web dependency is available in pom.xml file.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+When we develop our applications (Web or RESTful API), we would want to be able to test our changes quickly.
+Typically, in the Java world, we need to restart the server to pick up the changes.
+Restarting server takes about 1 to 5 minutes based on the size of the application. A typical developer does 30 - 40 restarts in a day.
+
+Thats where Spring Boot Developer Tools comes into picture.
+
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-devtools</artifactId>
+</dependency>
+
+-- When we develop web applications with Java, we had to restart the server to pick up all changes. This kills productivity. Spring Boot Developers Tools provides solutions to automatically pick up changes without a complete server restart.
+
+Q. What kind of changes does Spring Boot Developer Tools pick up?
+-- By default, any entry on the classpath that points to a folder will be monitored for changes.
+
+Note: These folders will not trigger reload by default
+
+/META-INF/maven
+/META-INF/resources
+/resources
+/static
+/public
+/templates
+
+
+-- You can configure additional folders to scan in application.properties.
+
+spring.devtools.restart.additional-paths = /path-to-folder
+
+-- You can also configure folders to exclude.
+
+spring.devtools.restart.exclude=static/**,public/** 
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ResponseEntity<T> class:
+--------------------------------
+
+-- ResponseEntity represents the whole HTTP response: status code, headers, and body. As a result, we can use it to fully configure the HTTP response.
+-- If we want to use it, we have to return it from the endpoint; Spring takes care of the rest.
+-- ResponseEntity is a generic type. Consequently, we can use any type as the response body.
+
+   @GetMapping("/hello")
+   public ResponseEntity<String> hello() {    
+       return new ResponseEntity<>("Hello World!", HttpStatus.OK);
+   }
+
+-- Since we specify the response status programmatically, we can return with different status codes for different scenarios:
+
+   @GetMapping("/age")
+   public ResponseEntity<String> findAge(@RequestParam("yearOfBirth") int yearOfBirth) {
+         if (isInFuture(yearOfBirth)) {
+             return new ResponseEntity<>("Year of birth cannot be in the future", HttpStatus.BAD_REQUEST);
+         }
+         return new ResponseEntity<>("Your age is " + calculateAge(yearOfBirth), HttpStatus.OK);
+   }
+
+-- Additionally, we can set HTTP headers:
+
+   @GetMapping("/customHeader")
+   public ResponseEntity<String> customHeader() {    
+        HttpHeaders headers = new HttpHeaders();    
+        headers.add("Custom-Header", "foo");
+        return new ResponseEntity<>("Custom header set", headers, HttpStatus.OK);
+   }
+
+-- ResponseEntity provides two nested builder interfaces: HeadersBuilder and its subinterface, BodyBuilder. Therefore, we can access their capabilities through the static methods of ResponseEntity. The simplest case is a response with a body and HTTP 200 response code:
+
+   @GetMapping("/hello")   
+   public ResponseEntity<String> hello() {
+       return ResponseEntity.ok("Hello World!");
+   }
+
+   public BodyBuilder accepted();
+   public BodyBuilder badRequest();
+   public BodyBuilder created(java.net.URI location);
+   public HeadersBuilder<?> noContent();
+   public HeadersBuilder<?> notFound();
+   public BodyBuilder ok();
+
+-- In addition, we can use the BodyBuilder status(HttpStatus status) and the BodyBuilder status(int status) methods to set any HTTP status.
+Finally, with ResponseEntity<T> BodyBuilder.body(T body) we can set the HTTP response body:
+
+   @GetMapping("/age")
+   public ResponseEntity<String> findAge(@RequestParam("yearOfBirth") int yearOfBirth) {
+         if (isInFuture(yearOfBirth)) {
+                return ResponseEntity.badRequest()
+                                               .body("Year of birth cannot be in the future");
+         }
+         return ResponseEntity.status(HttpStatus.OK)       
+                                        .body("Your age is " + calculateAge(yearOfBirth));
+    }
+
+-- We can also set custom headers:
+
+   @GetMapping("/customHeader")
+   public ResponseEntity<String> customHeader() {
+        return ResponseEntity.ok()
+                                       .header("Custom-Header", "foo")
+                                       .body("Custom header set");
+   }
+
+-- Since BodyBuilder.body() returns a ResponseEntity instead of BodyBuilder, it should be the last call.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Interview Questions:
+--------------------------
+
+1) Spring Boot Features?   OR    Advantage of using Spring Boot?
+2) What is @SpringBootApplication?
+3) What is autoconfiguration and how does Spring boot does auto-configuration?
+4) What is profiles in Spring boot?
+5) What is ResponseEntity class?
+6) What is a use of devtools?
+7) Different embedded servers supported by Spring boot? Which is default one? and how we can use another embedded server?
+8) Different ways of creating spring boot application?
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Content Negotiation and Generating Responses:
+------------------------------------------------------------
+
+-- REST stands for REpresentational State Transfer. Key abstraction in REST is a Resource. There is no restriction on what can be a resource. 
+-- A resource can have multiple representations
+   * XML 
+   * JSON
+-- When a resource is requested, we provide the representation of the resource. 
+-- When a consumer sends a request, it can specify two HTTP Headers related to Content Negotiation.
+   * Accept => Accept indicates the expected content type of the response.  
+   * Content-Type => Content-Type indicates the content type of the body of the request.
+
+-- The server is expected to respond based on the Accept header in the request.
+
+For example, if a consumer sends a request to http://localhost:8080/api/v1/students/101 with Accept header as ‘application/xml’, we need to provide the xml representation of the resource.
+
+<Student>
+    <id>101</id>
+    <name>Alex Browning</name>
+    <contact>9988776655</contact>
+    <branch>EXTC</branch>
+</Student>
+
+If a consumer sends a request with Accept header as ‘application/json’, we need to provide the JSON representation of the resource.
+
+{
+    "id": 101,
+    "name": "Alex Browning",
+    "contact": 9988776655
+    "branch": "EXTC"
+}
+
+-- Similar concept applies to the Response Body Content based on the Content-Type.
+-- A consumer can send a POST request to http://localhost:8080/api/v1/students with Content-Type header as ‘application/xml’, and provide the XML representation of the resource to be created.
+
+<Student>
+    <name>Anna Parker</name>
+    <contact>8877665544</contact>
+    <branch>IT</branch>
+</Student>
+
+-- A consumer can also send a POST request to http://localhost:8080/api/v1/students with Content-Type header as ‘application/json’, and provide the JSON representation of the resource to be created.
+
+{
+   "name": "Anna Parker",
+   "contact": 8877665544,
+   "branch": "IT" 
+}
+
+Dependency:
+-----------------
+
+<dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-xml</artifactId>
+</dependency>
+
+GET Request
+      URL - http://localhost:8080/api/v1/students
+      Request Method - GET
+             Request Headers
+             Accept - application/xml
+
+POST Request
+      URL - http://localhost:8080/students
+      Request Method - POST
+            Request Headers
+                 Content-Type - application/xml
+
+
+=====
+
+    @PostMapping("/students")
+    public ResponseEntity<Object> createStudent(@RequestBody Student student) {
+           studentRepository.save(student);
+           URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				                  .buildAndExpand(savedStudent.getId()).toUri();
+           return ResponseEntity.created(location).build();
+     }
+
+=====
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Exception Handling in Spring Boot
+------------------------------------------- 
+
+1) @ExceptionHandler  
+
+2) @ControllerAdvice + @ExceptionHandler 
+
+-- @ControllerAdvice is a specialization annotation which allows to handle exceptions across the whole application in one global handling component.
+-- It can be viewed as an interceptor of exceptions thrown by methods annotated with @RequestMapping and similar.
+-- ResponseEntityExceptionHandler is a convenient base class for @ControllerAdvice classes that wish to provide centralized exception handling across all @RequestMapping methods through @ExceptionHandler methods.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Documenting REST APIs with swagger:
+-------------------------------------------------
+
+Q. How does the consumer know
+
+   * What is format of the request?
+   * What content types your API supports?
+   * What is the structure of the response?
+   * Do you use HATEOAS?
+   * How to test your API?
+   * What kind of security mechanism you use?
+
+-- Your clients will need to know how to interact with your API. In SOAP-based web services, you had a WSDL to work with. This gave API developers an XML-based contract, which defined the API. API documentation should be structured so that it’s informative and easy to read.
+-- REST does not specify a documentation standard or a contract like SOAP (WSDL). REST gives you the flexibility to choose your documentation format and approach. But that does not mean "No documentation".
+
+Q. How do you document your RESTful API?
+
+-- One option is to maintain documentation manually. But that gets outdated quickly.
+-- There are multiple approaches to documenting your RESTful API
+     * WADL
+     * RESTDocs
+     * Swagger or OpenDocs
+
+-- Swagger 2 is an open-source project used to describe and document RESTful APIs.
+-- The current version defines a set HTML, JavaScript, and CSS assets to dynamically generate documentation from a Swagger-compliant API.
+-- These files are bundled by the Swagger UI project to display the API on the browser.
+-- Besides rendering documentation, Swagger UI allows other API developers or consumers to interact with the API’s resources without having any of the implementation logic in place.
+-- The Swagger 2 specification, which is known as OpenAPI specification, has several implementations. 
+-- Currently, Springfox is popular for Spring Boot applications.
+
+
+-- We would need to add a couple of dependencies related to Swagger and configure a Docket to generate Swagger Documentation. We will also use Swagger UI to have a visual representation of the Documentation and execute Test Requests.
+
+     <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
+     <dependency>
+         <groupId>io.springfox</groupId>
+         <artifactId>springfox-swagger2</artifactId>
+         <version>2.8.0</version>
+     </dependency>
+	
+     <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
+     <dependency>
+         <groupId>io.springfox</groupId>
+         <artifactId>springfox-swagger-ui</artifactId>
+         <version>2.8.0</version>
+     </dependency>
+
+Configuring Swagger 2 in the Application:
+-----------------------------------------------------
+
+-- We will create a Docket bean in a Spring Boot configuration to configure Swagger 2 for the application. A Springfox Docket instance provides the primary API configuration with sensible defaults and convenience methods for configuration. 
+
+           @Configuration
+           @EnableSwagger2
+           public class SpringFoxConfig {                                    
+                @Bean
+                public Docket api() { 
+                     return new Docket(DocumentationType.SWAGGER_2)  
+                              .select()                                  
+                              .apis(RequestHandlerSelectors.any())              
+                              .paths(PathSelectors.any())                          
+                              .build();                                           
+                 }
+            }
+
+-- In this configuration class, the @EnableSwagger2 annotation enables Swagger support in the class. 
+-- The select() method called on the Docket bean instance returns an ApiSelectorBuilder, which provides the apis() and paths() methods that are used to filter the controllers and methods that are being documented using String predicates.
+-- We can configure predicates for selecting RequestHandlers with the help of RequestHandlerSelectors and PathSelectors. Using any() for both will make documentation for our entire API available through Swagger.
+-- At this point, you should be able to test the configuration by starting the app and pointing your browser to http://localhost:8080/v2/api-docs
+-- Obviously, the above JSON dump that Swagger 2 generates for our endpoints is not something we want. What we want is some nice human readable structured documentation, and this is where Swagger UI takes over. Swagger UI is a built-in solution that makes user interaction with the Swagger-generated API documentation much easier.
+
+http://localhost:8080/swagger-ui.html
+http://localhost:8080/swagger-ui/index.html
+
+
+Customizing Swagger:
+----------------------------
+
+           @Configuration
+           @EnableSwagger2
+           public class SpringFoxConfig {                                    
+                @Bean
+                public Docket api() { 
+                     return new Docket(DocumentationType.SWAGGER_2)  
+                              .select()                                  
+                              .apis(RequestHandlerSelectors.any())              
+                              .paths(PathSelectors.any())                          
+                              .build()
+                              .apiInfo(metaData());                                           
+                 }
+
+                 private ApiInfo metaData() {
+                        ApiInfo apiInfo = new ApiInfo(
+                                "Spring Boot REST API",
+                                "Spring Boot REST API for Online Store",
+                                "1.0",
+                                "Terms of service",
+                                new Contact("John Thompson", "https://mywebapp.com/about/", "john@mywebapp.com"),
+                                "Apache License Version 2.0",
+                                "https://www.apache.org/licenses/LICENSE-2.0");
+                        return apiInfo;
+                   }
+            }
+
+-- In the SwaggerConfig class, we have added a metaData() method that returns and ApiInfo object initialized with information about our API.
+
+-- We can use the @Api annotation on our controller class to describe our API.
+-- For each of our operation endpoints, we can use the @ApiOperation annotation to describe the endpoint and its response type.
+-- Swagger 2 also allows overriding the default response messages of HTTP methods. You can use the @ApiResponse annotation to document other responses, in addition to the regular HTTP 200 OK etc...
+
+           @ApiOperation(value = "View a list of available products", response = Iterable.class)
+           @ApiResponses(value = {
+                   @ApiResponse(code = 200, message = "Successfully retrieved list"),
+                   @ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+                   @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+                   @ApiResponse(code = 404, message = "The resource you were trying to reach is not found")
+               }
+            )
+           @RequestMapping(value = "/list", method= RequestMethod.GET, produces = "application/json")
+           public Iterable list(Model model){
+                 Iterable productList = productService.listAllProducts();
+                 return productList;
+           }
+
+Swagger 2 Annotations for Model:
+-------------------------------------------
+
+-- You can use the @ApiModelProperty annotation to describe the properties of the model class. With @ApiModelProperty, you can also document a property as required.
+
+            @Entity
+            @ApiModel(description="All details about the student. ")
+             public class Student {
+  
+                  @ApiModelProperty(notes="Name should have atleast 2 characters")
+                  @Size(min=2, message="Name should have atleast 2 characters")
+                  private String name;
+                  ......
+                  ......
+             }
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Spring Boot Actuators:
+----------------------------
+
+-- Spring Boot Actuator provides built-in production ready endpoints that can be used for monitoring and controlling your application.
+-- Monitoring applications may include health and Info to some complex data like understanding Traffic and Metrics for our application. For example, how much resources (CPU, RAM, etc.) are being used by the application.
+-- You can choose to interact with actuators either with HTTP endpoints or with JMX beans.
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+   </dependency>
+
+-- All the endpoints fall under a common prefix of /actuator.   [ http://localhost:8080/actuator ]
+
+Note: In Spring Boot 1, all of the actuator endpoints were in the root base path, i.e /, but in Spring Boot 2, all of them are by default grouped under /actuator.
+
+You can change the base path of the actuator endpoints by adding the following properties in the application.properties:
+
+ management.endpoints.web.base-path=/admin
+ management.server.port=8090
+
+-- Now, all the actuator endpoints will be under the /admin prefix, which makes sense since only an admin should have access to metrics such as these.
+
+Actuator Endpoints:
+------------------------
+
+-- There are many endpoints available, the result of http://localhost:8080/actuator shows only /health and /info.
+-- Since actuator endpoints contain sensitive information, we have to explicitly expose each of them.
+
+   http://localhost:8080/actuator/health
+   http://localhost:8080/actuator/info
+
+  info.name = Employee Service
+  info.version = 1.0
+  info.description = Employee service with CRUD operation
+
+Exposing Endpoints:
+-------------------------
+
+-- In order to expose endpoints, Spring provides 2 properties that we can use individually or in combination:
+
+   management.endpoints.web.exposure.exclude  => Used to exclude a list of endpoints that we do not want to expose. The default value for it is empty.
+   management.endpoints.web.exposure.include  => Used to include a list of endpoints that we want to expose. The default value for it is info, health. This is why both these endpoints were available by default.
+
+   management.endpoints.web.exposure.include= *
+
+-- Now, let's check the actuator endpoints http://localhost:8080/actuator
+
+
+Enabling Endpoints:
+-------------------------
+
+-- Besides exposing endpoints, we can also enable and disable them. 
+-- By default, all the endpoints are enabled except for one, the shutdown endpoint. You can enable/disable each endpoint by setting the management.endpoint.<id>.enabled property
+
+management.endpoint.shutdown.enabled=true
+management.endpoint.beans.enabled=false
+
+-- You can also disable all endpoints by setting management.endpoints.enabled-by-default to false and then individually enable the properties you want.
+
+
+Some of important and widely used actuator endpoints are given below:
+------------------------------------------------------------------------------------------
+
+/auditevents	 =>    Returns all auto-configuration candidates and the reason why they ‘were’ or ‘were not’ applied.
+/beans	               =>   Returns a complete list of all the Spring beans in your application.
+/mappings	 =>   Displays a collated list of all @RequestMapping paths..
+/env	               =>   Returns list of properties in current environment
+/health	               =>   Returns application health information.
+/caches	               =>   It exposes available caches.
+/conditions	 =>   Shows the conditions that were evaluated on configuration and auto-configuration.
+/configprops	 =>   It displays a collated list of all @ConfigurationProperties.
+/integrationgraph	 =>   It shows the Spring Integration graph. Requires a dependency on spring-integration-core.
+/loggers	               =>  The configuration of loggers in the application..
+/scheduledtasks	 =>  Displays the scheduled tasks in the application.
+/shutdown	 =>  Lets the application be gracefully shutdown. Disabled by default.
+/threaddump	=>   It performs a thread dump.
+/metrics	              =>  It shows several useful metrics information like JVM memory used, system CPU usage, open files, and much more
+
+
+Caching Support:
+----------------------
+
+-- All the endpoints (that are READ operation (GET method) and do not take any parameter) have basic caching support as well.
+-- Every endpoint has a property of cache.time-to-live that's automatically generated for you which can be used to specify the cache time:
+
+   management.endpoint.beans.cache.time-to-live=10s
+
+
+Securing Actuator Endpoints:
+------------------------------------
+
+-- These endpoints store sensitive information about our application and it would be a good idea to secure them.
+-- To do it we can simply add spring security to our application by adding the spring-boot-starter-security dependency in our pom.xml
+
+     <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-security</artifactId>
+     </dependency>
+
+-- By default, just by importing it, all of the endpoints in our application will be secured.
+
+     spring.security.user.name=user
+     spring.security.user.password=password
+
+
+Creating Custom Endpoints:
+-----------------------------------
+
+-- This can be achieved by adding the @Endpoint and @Component annotation to your class. After that, you can create methods and annotate them with @ReadOperation, @WriteOperation, or @DeleteOperation accordingly. You can, of course, have multiple methods with different operations.
+
+-- The idea of having multiple operations is to map to different HTTP request methods:
+
+@ReadOperation maps to HTTP GET
+@WriteOperation maps to HTTP POST
+@DeleteOperation maps to HTTP DELETE
+
+@Component
+@Endpoint(id = "details")
+public class DetailsEndpoint {
+
+    @ReadOperation
+    public String details() {
+        return "My App Details";
+    }
+s
+
+-- Restart the application and navigate to your browser to http://localhost:8080/actuator/details:
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CORS:
+--------
+
+-- Cross-Origin Resource Sharing (CORS) is a security policy that uses HTTP headers to tell a browser to let a web application running at one origin (domain) have permission to access selected resources from a server at a different origin (domain).
+-- A web page can embed cross-origin images, stylesheets, scripts, iframes, and videos. Some cross-domain requests, notably Ajax requests, are forbidden by default by the same-origin security policy.
+-- XMLHttpRequest and the Fetch API follow the same-origin policy. Therefore; a web application using those APIs can only request HTTP resources from the same origin the application was loaded from, unless the response from the other origin includes the right CORS headers.
+
+Q. How to enable CORS in Spring Boot application?
+--------------------------------------------------------------------
+
+a) @CrossOrigin annotation  => Class OR Method Level Annotation.
+
+b) Configure CORS for whole application. 
+
+-- We have to create a bean "WebMvcConfigurer"
+
+@Configuration
+public class CorsConfig {
+	
+	@Bean
+	public WebMvcConfigurer corsConfiguration() {
+		
+		return new WebMvcConfigurer() {
+			
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedOrigins("http://localhost:4200", "http://www.myapp.com");
+			}
+		};
+	}
+}
+
+c) By using Spring Security.
+
+-----------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+

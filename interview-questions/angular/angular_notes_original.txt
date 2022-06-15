@@ -1,0 +1,1082 @@
+Angular:
+------------
+
+   Pre-requisite:
+   -------------------
+
+      1) Knowledge of TypeScript is must.
+      2) Knowledge of OOP is required.
+      3) Experience of Web Application Development (Java / .NET)
+
+   Software Requirements:
+   -------------------------------
+   
+     1) Node JS
+     2) Visual Studio Code (Any other editor)
+
+
+   Angular 1 (Angular JS)  => Older version
+   
+   Angular 2+ version  => Angular => Rewritten in TypeScript
+
+  * Angular TEAM releases major version in every 6 months.
+  * Most of the major changes are at execution level /performance level (for optimization) (How code is executed and compiled) (To improve performance of application). There are less minor changes in the APIs.
+
+
+   What is Angular?
+   ----------------------
+
+    -- Angular is a client side JavaScript framework and library.
+    -- Gives you a predefined project structure for writing a code.
+    -- Gives you out of the box features:
+         a) Data Bindings
+         b) Dependency Injection (DI)     
+         c) Routing
+         d) Forms and Validations 
+         e) HTTP calls
+         etc....
+    -- Angular has its own library (Core APIs that we use for development of our application and is a part of Angular library) 
+    -- Angular libraries are written in TypeScript.
+    -- Used for creating Single Page Applications (SPAs)
+        -- Single Page (index.html)
+            * contains all apsects of your application.
+
+      http://www.abc.com  
+
+    * To create Angular project, we need Angular CLI.  How to get Angular CLI? => By using npm.
+
+     > npm install -g @angular/cli
+
+    > ng --version
+
+    Please verify installation in below path: 
+     
+      "C:\Users\<YOUR_USERNAME>\AppData\Roaming\npm" 
+
+    * How to create angular project?
+
+    > ng new <project_name>
+
+    > ng new hello-world
+
+      * It downloads all the angular libraries and dependent libraries that angular depends on.
+      * It also generates root component (AppComponent) and root module (AppModule).
+      * It also creates sample code to bootstrap root module.
+
+  
+    Angular Application:
+   ---------------------------  
+  
+    * Physical and Logical structure.
+
+       a) Components: 
+
+                -- Part of UI or view. An application consists of small and reusable components.
+  
+                Example of e-commerce applications.
+                -----------------------------------------------
+
+                 Customer Module:   10KB
+                 ----------------------
+                       LoginComponent  => Display login Form
+                       RegistrationComponent  => Display Registration Form
+                       EditProfileComponent
+                       ChangePasswordComponent
+                       DeactivateAccountComponent
+                       CustomerService
+                        
+                  Product Module:  20KB
+                 ----------------------
+                        ProductListComponent 
+                        ProductDetailsComponent
+                        AddNewProductComponent
+                        EditProductDetailsCOmponent
+                        DeleteProductComponent
+                        ProductService
+
+
+                   Cart Module:  5KB
+                  ---------------- 
+                        CartComponent
+                        CartService
+
+          
+                    Order Module:  8KB
+                   --------------------
+                         OrderListComponent
+                         OrderDetailsComponent
+                         OrderService
+
+       How to create a component?
+       ------------------------------------
+            * In Angular, component is a typescript class.
+            * We have to use @Component decorator.
+
+            <component_name>.component.ts 
+            <component_name>.component.html
+            <component_name>.component.css
+            <component_name>.component.spec.ts   
+
+            productlist.component.ts
+
+            @Component		
+            export class ProductListComponent {
+  
+             }
+        
+            app.component.ts   [ Root or main component of our application ]
+
+            @Component 
+            export class AppComponent {
+	 
+            }
+
+            * Every component in angular is having UI / template ( html code ) associated with it.
+         
+            app.component.html        
+            app.component.css  
+            app.component.spec.ts   
+
+          * @Component decorator. 
+
+            Properties of @Component decorator:
+                * selector: 
+
+                * template
+                * templateUrl:  We have to provide path of .html file (relative or absolute URL)
+
+                * styles
+                * styleUrls: We can provide path of multiple .css files (relative or absolute URL) 
+
+       b) Modules:
+
+            Java => Packages     
+            .NET => namespaces 
+
+           * Grouping of types.
+           * Whenver we build our application:
+              - index.html
+              - *.js file
+               
+           * Lazy loading of modules.
+           * Eager loading of modules.
+
+           <module-name>.module.ts
+            app.module.ts       [ Root or Main module of our application ]
+
+            @NgModule	
+            export class AppModule {
+
+            }
+
+           * Module groups related components, pipes, directives and services.
+
+           @ngModule decorator properties:
+
+              declarations: We have to declare components, pipes and directives that belong to the module.
+              providers: We have to declare all services that belong to the module
+              imports: We can import built-in or user-defined modules.
+              exports: We can export components, pipes and directives that belong to the module (We are making them public), so any other module that
+                           imports our module, can access components, pipes and directives that our module has exported.
+              bootstrap: It is only available for root module i.e. AppModule (app.module.ts). We have to declare components that are bootstrapped when 
+                               app module is bootstrapped.
+
+       c) Pipes:
+
+          -- Used to format the values while displaying them on UI.
+             dd-mm-yyyy 
+             dd/mm/yyyy
+ 
+          -- Build-in pipes.
+          -- Pipes transform data before displaying on browser.
+          -- Built-in pipes include lowecase, uppercase, date, decimal, percent, currency etc...
+          -- To apply pipe on a bound property use pipe character '|'.
+          -- We can also chain pipes.
+          -- We can also create our own custom pipes. [ use cases: sorting, filtering etc... ]      
+
+Q. How to create a custom pipe?
+-------------------------------------------
+
+-- To create a custom pipe, we have to create a class and decorate it with @Pipe decorator.
+-- Pipe class should implement PipeTransform interface and implements its transform() method.
+-- Declare the pipe in module.
+
+Assignment: 
+----------------
+
+1) Create a pipe that sorts employee list based on salary (in ascending or descending).
+
+          @Pipe({
+                 name: 'employeeTitle'
+          })
+          export class EmployeeTitlePipe implement PipeTransform {
+
+                    transform() {
+
+                    }
+           }
+         
+        > ng g pipe filter-employees
+ 
+       * Pipes can accept multiple arguments.
+
+       {{ expression: pipe: arg1: arg2: .. }}
+
+      * There are 2 different types of Pipes:
+
+         1) Pure Pipe:
+             -- transform() method is called / executed only when object reference changes not when value within object changes. 
+
+               person = {
+                      name: "Alex Browning",
+                      age: 32,
+                      salary: 34000 
+               }
+
+         2) Impure Pipe:  
+             -- transform() method will be called each time when any change occurs in object reference or value. 
+                 [ We don't have to use impure pipe when we have large list of items (degrade performance) ]]
+
+
+       d) Directives:
+             
+             -- Similar to HTML attributes.
+             -- Built-in directives
+                   ngIf, ngFor, ngSwitch 
+
+             -- They change the behavior of HTML elements.  
+             -- We can also create custom-directives.
+ 
+                 <input type="text"  name="username" value="" size="15" />
+                 <body bgcolor="yellow">
+ 
+             <span animation="true" highlight="yellow">This is a simple text</span>
+             <p highlight="yellow">This is a paragraph</p>
+
+       -- In Angular, there are structural directives. Structural directives always start with *. Structural directives can add or remove HTML elements from DOM.
+              *ngIf, *ngFor, *ngSwitch  
+
+       e) Routers:
+
+         Routing:
+         -----------
+            -- Navigation from one component to another component.
+            -- It is a mechanism available in client side JS frameworks like Angular, React JS, Vue JS etc...
+            -- We use routing to implement navigations in SPAs.
+            -- The navigation logic is on client side.
+            
+        Q. How to implement Routing in ANgular?
+
+        -- To implement routing in Angular, we must import "RouterModule". 
+        -- You can use <router-outlet> placeholder where we display component's view template.
+        -- Routing works by checking the URL  and then takes some decisions:
+ 
+              IF URL is /home THEN
+                  load HomeComponent
+              IF URL is /login THEN
+                 load LoginComponent
+             IF URL is /careers THEN
+                 load CareersComponent
+             ....
+             ....
+             ELSE 
+                 load ResourceNotFoundComponent 
+
+          -- Advantage of Routing mechanism is, It is automatically integrated with browser history [ We can use Back and forward buttons of browser ]
+          -- We can also bookmark the angular routes and later we can load them.  
+
+        Steps to implement Routing in Angular:
+        --------------------------------------------------
+
+          1) Import "RouterModule".    
+          2) Create route configurations.
+                |
+                | - Root Module route configurations           For eg.  app.routes.ts
+                | - Feature Modules router configuration.   For eg.  book.routes.ts, customer.routes.ts, cart.routes.ts etc...
+
+              -- Define routes. Typically each route has 2 things 1) URL pattern 2) Component to be loaded.      
+              -- In addition to that, route can also have child route patterns, routing guards etc...
+              -- Each Route object has path and component properties.
+            
+          3) Place <router-outlet> in the component's view template (.html fiile).
+          4) Create router links for the user to navigate.
+
+                 <a routerLink="/home">Home</a>
+                 <a routerLink="/login">Login</a>
+                 <a routerLink="/signup">SignUp</a>
+                 <a routerLink="/aboutus">AboutUS</a>
+                 <a routerLink="/contactus">ContactUS</a>
+                 <a routerLink="/careers">Careers</a>           
+
+        Q. How to make that route configuration available to root module (app module)?
+         --  RouterModule.forRoot(appRoutes);
+
+        Q. How to load routes dynamically?
+         -- 
+
+         Nested Routes:
+         --------------------
+
+
+
+       f) Services:
+
+              * Sharing common logic between the components.
+              * Making HTTP calls.
+              * It is a .ts file that contains a logic that can be shared across multiple components.
+              * To provide data to components.
+
+            <service-name>.service.ts
+            app.service.ts
+
+            @Injectable()            
+            export class AppService {
+
+            }
+          
+ 
+
+ Decorators:
+ -------------------
+
+   Java => Annotations     @Overridde  @WebServlet  @SupressWarnings
+   .NET  => [attributes]
+
+ 
+ * How to run Angular application?
+
+   > npm start     => Internally executes > ng serve
+      
+   > ng serve    OR  > ng serve -o
+
+  -- ng serve command compiles entire application (All .ts files will be compiled into .js files).
+  -- It creates development build. [   *.js, style.css, index.html ]
+  -- There is an utility / tool called as webpack. Webpack bundles your application. It is tool for JavaScript. It minimizes, optimizes and create a bundle.
+  -- It also starts development server and it listens on port 4200.
+  -- It also provides synchronization between source code and web browser.
+
+
+* How to create production build?
+
+  > npm run build    => Internally execute  > ng build
+
+  -- It creates dist/<application-name> folder and has index.html and *.js (chunk files), styles.css. 
+  -- It uses webpack utility / tool to bundle your application.    
+            
+ 
+Angular Bootstrap Process:
+=========================
+
+  http://localhost:4200/       => This serves index.html
+
+   OR
+
+   http://localhost:4200/index.html
+ 
+  -- When index.html page is loaded, Angular application starts bootstrapping process. [ Root module (AppModule) is bootstrapped / loaded, then root
+      component (AppComponent) is bootstrapped / loaded ]
+   
+ platformBrowserDynamic():
+ 
+   -- It is a function and part of '@angular/platform-browser-dynamic'.
+   -- This function allows you to bootstrap angular application in browser environment (web browser).
+   -- platformBrowserDynamic() function returns an object that allows you to bootstrap a module by calling its bootstrapModule(root_module).
+      (Basically it loads .js file of Root Module / App Module).
+   -- bootstrap property of Root Module / App Module. Angular tries to bootstrap root component i.e AppComponent.
+   -- Angular checks if there is a selector of AppComponent inside index.html file.
+   -- If yes, template of AppComponent is inserted into DOM, else an error will be thrown and it will not load AppComponent.
+
+
+Q. How to add bootstrap?
+-----------------------------------
+
+-- There are 2 options.  
+   a) Using CDN  
+   b) Install bootstrap using 
+         > npm install bootstrap --save
+       -- Add the below line in styles.css 
+          @import "../node_modules/bootstrap/dist/css/bootstrap.css";
+       -- Add styles.css in index.html file.   
+
+  
+Data Binding:
+=============
+
+* Data binding is all about moving class property value to its corresponding view template and back i.e. from view template to its corresponding class property.
+
+Angular supports 3 types of  bindings:
+------------------------------------------------
+
+  1) One-way data binding => From component class to view template
+  2) One-way data binding => From view template to component class  (Which is also called as Event Binding)
+  3) Two-way data binding => From component class to view template and view template to component class. 
+
+
+a) Interpolation {{ }}
+b) Property binding
+c) Attribute binding
+d) Event binding
+e) 2-way data binding
+f) class binding
+g) style binding
+
+
+ * Interpolation {{ }} :
+----------------------------------  
+   -- One way data binding
+   -- From component class to view template.
+   -- {{  }}  -> Template expression.
+   -- We can also concatenate hard coded string values.
+   -- We can add any expression inside interpolation.
+   -- We can also use ternary operator inside interpolation. 
+   -- We can also use interpolation to bind class properties to the HTML element property values.
+   -- By using interpolation, we can also call class methods.
+
+* Property Binding [ ] :
+--------------------------------
+   -- One way data binding
+   -- From component class to view template.
+   -- Interpolation is a special syntax that Angular converts into property binding.
+   -- To concatenate strings, we must use interpolation instead of property binding.
+  
+  <img [src]="imageUrl" />  
+
+  -- To set an HTML element property to a non-string data value, we must use property binding instead of interpolation.
+  -- We can also use canonical form of property binding.
+  -- Both interpolation and property binding sanitized malicious content before rendering to the browser harmelessly.
+
+
+* What is a difference between Attribute and Property of HTML element?
+-------------------------------------------------------------------------------------------
+
+  -- Attributes are defined by HTML, whereas properties are defined by DOM.
+  -- Attributes initialize DOM properties. Once the initialization completes, the attributes job is done.
+  -- Property values can change but attribute values can't.
+  -- HTML attributes and DOM properties are different.
+  -- Angular binding works with DOM properties and not HTML attributes.  
+  
+* Event Binding (event) : 
+--------------------------------
+
+   -- One-way data binding.
+   -- From view template to class component template.
+
+   <button (click)="display()">Click Me</button>
+
+   -- We can also use canonical form for event binding. 
+
+   < button on-click="display()">Click Me</button>
+
+
+* Attribute Binding:
+-----------------------
+
+-- What is a difference between HTML attribute and property?    
+
+ -- Not all HTML attributes have corresponding DOM properties. For eg. colspan aatribute of th does not have corresponding DOM property.
+ -- We can use attribute binding using interpolation syntax or property binding syntax:
+
+     Interpolation syntax:   <th  attr.colspan="{{ columnspan }}">
+
+     Property Binding Syntax:   <th  [attr.colspan]="columnspan" >
+
+* Two-way data binding:
+-------------------------------
+
+  -- $event is an object exposed by angular binding and contains event data.
+  -- Two-way data binding = Property Binding + Event Binding
+  -- Angular provides a simple way to achieve two-way data binding by using ngModel.
+  -- ngModel present in "FormsModule", so we have to import FormsModule to use ngModel.
+
+
+Important points:
+------------------------
+
+-- Interpolation, property bindings work with HTML DOM properties not attributes.
+-- Attribute binding can be used when
+   a) HTML element attribute does not have corresponding DOM property.
+   b) HTML elements attribute name and DOM property name are different. For eg. colspan is an attribute and colSpan is a DOM property.
+
+
+* How to generate component from angular cli?
+
+  > ng generate component binding-demo  
+  
+  > ng g c  binding-demo  
+
+  binding-demo
+
+  binding-demo.component.ts
+  binding-demo.component.html
+  binding-demo.component.css
+  binding-demo.component.spec.ts
+
+  @Component
+  export class BindingDemoComponent {
+
+  }
+
+* Adding bootstrap css file to angular.
+
+  > npm install bootstrap --save
+ 
+ -- Inside styles.css, import bootstrap.css file.
+
+  @import "../node_modules/bootstrap/dist/css/bootstrap.css";
+
+* We can also add CDN to index.html file.
+* Don't forget to add styles.css in index.html file.
+
+    <link href="styles.css" rel="stylesheet" />
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  
+
+Directives:
+--------------
+-- Directives are classes that add additional behavior to elements in your Angular applications.
+
+The different types of Angular directives are as follows:
+
+1) Components => directives with a template. This type of directive is the most common directive type.
+
+2) Attribute directives => directives that change the appearance or behavior of an element, component, or another directive.
+
+3) Structural directives => directives that change the DOM layout by adding and removing DOM elements.
+
+Component		Attribute Directive		Structural Directives
+Built in @component	Built in NgStyle, NgClass	Built in *NgIf,*NgFor,*NgSwitch
+
+-- Structural directives are responsible for HTML layout. They shape or reshape the DOM's structure, typically by adding, removing, and manipulating HTML elements.
+
+     a) NgIf—conditionally creates or disposes of subviews from the template.
+     b) NgFor—repeat a node for each item in a list.
+     c) NgSwitch—a set of directives that switch among alternative views. 
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+
+Book Application:
+
+
+  Book Module
+  ----------------------
+    BookListComponent    => Displays list of  books based on category.                                             
+    BookDetailsComponent => Displays book information based on its book id            
+    BookService  => Making HTTP calls to get list of books and book information
+    BookModule    
+
+  Customer Module
+  ------------------------
+   RegistrationComponent                
+   LoginComponent
+   EditProfileComponent 
+   CustomerService
+   CustomerModule
+
+  Cart Module
+  -----------------
+   CartComponent
+   CartService
+   CartModule
+
+  Common Module
+ -----------------------
+  RatingsComponent
+  CommonModule
+
+  App Module
+ -----------------
+  AppComponent
+  HomeComponent
+  HeaderComponent
+  FooterComponent 
+  AppModule
+
+
+* How to generate angular module?
+
+  > ng g module book --module app
+
+* How to generate BookListComponent as a part of Book Module?
+
+  > ng g c book/book-list --module book
+
+* Generate Customer Module.
+
+  > ng g module customer --module app
+
+ -- Create Login component as a part of customer module. 
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Naming Conventions: 
+---------------------------
+
+       Component
+       ---------------
+ 
+             <component_name>/component.ts
+             <component_name>/component.html
+             <component_name>/component.spec.ts
+             <component_name>/component.css
+
+       Module
+       ---------
+ 
+            <module_name>.module.ts
+
+      Pipe
+      ------
+
+            <pipe_name.pipe.ts
+            <pipe_name>.pipe.spec.ts
+
+      Routes:
+      ----------
+
+             <module_name>.routes.ts
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Component Communication:
+-----------------------------------
+
+  * We can have nested components.
+  * How can we pass the data from parent -> child component or child -> parent component?
+
+     @Input(),  @Output() and EventEmitter,  @ViewChild() 
+
+   1) Parent -> Child
+   ------------------------
+
+      a) In a child component, create a data member decorated with @Input() decorator.
+      b) While rendering child component from parent component, use the child component data member to pass the data. (use property binding)
+ 
+             <app-child [name]="" ></app-child>
+
+   
+     2) Child -> Parent
+    ------------------------
+    
+          a) Create an EventEmitter instance / object decorated with @Output() decorator in a child component.
+
+               * EventEmitter is a typescript class and is generic class. It allows you to emit custom events.
+
+          b) Child component emits an event, passing the data to parent component. Data is passed within an event.
+          c) Parent component has to subscribe to that event which is emitted by child component. Parent can extract the data from event.
+
+           Q. How Parent component subscribes to that event?
+           ----------------------------------------------------------------
+  
+
+   3) @ViewChild():
+  ----------------------
+          -- It gives access to the child component instance at runtime and then invoke any function of child component.
+             For eg. If we have a method in a child component and we have to call that method from parent component, then we can make a use of @ViewChild() decorator.
+
+           a) If we want to access any property of a class (component, directive, service) or invoke a function, then we can make use of @ViewChild()    
+           b) No need to have parent-child relationship.
+
+
+
+Agenda:
+-----------
+
+* Services in Angular and How services work?
+* Observable
+* Lazy Loading of Modules.
+
+Angular Service:
+---------------------
+
+  * Service is a class that can be injected into components, pipes or directives.
+  Use cases: 
+     * If we want to share commin logic across the components.
+     * Making HTTP calls to the backend applications.
+     * Logics related to  Authentication, logging etc...
+     * Share the data between components.
+
+   * Service is a class that is decorated with @Injectable() decorator.
+
+   How Service works in Angular?
+  ----------------------------------------
+   1) Injector: It is a piece of JS code which is responsible for creating an instance of service and inject it in components, pipes or directives.
+ 
+   2) Service Provider: Tells the injector how to create an object of service. Every injector has to be configured with service provider (Service provider must attached with Injector). Service provider is basically service class. 
+
+  @Injectable({
+      providedIn: 'root'
+   })
+
+  -- It means that service is available for entire application. Service is provided in root module (AppModule).
+
+ 
+   Injectors are available at different levels: 
+   ------------------------------------------------------
+
+      1) Root level injector (Root Module Injector) (Application Level).
+
+             @Injectable({
+                   providedIn: 'root'
+              })
+              export class CounterService {  } 
+
+              OR
+
+               @ngModule( {
+                       providers: [ CounterService ]
+               })
+ 
+          -- Aa service is available for entire application and single object of that service will be created.
+ 
+      2) Module level injector (Feature Module Level):
+            -- If we register service provider with module level injector and that module is not lazily loaded, then service is available at root level injector [For entire application service will be available and single object of that service will be created.]
+           
+            -- If we register service provider with module level injector and that module is loaded lazily, then service is availabe at module level. 
+
+
+       Q. If we have modules that are eagerly loaded and we want to make service available to only specific module, How to achieve this?
+            -- 
+
+      3) Element level Injector (Component level / Pipe level / Directive Level)
+         -- Separate instance of service is created for each component / pipe / directive.  
+   
+  
+
+
+Eager and Lazy loading of modules:
+---------------------------------------------
+
+    There are 3 strategies of module loading:
+
+   1)  Eager Loading:
+    ----------------------
+       * With eager loading, all modules must be loaded at client side before application starts.
+       * By default, all modules are eagerly loaded.
+       * Eager loading works fine for small applications.
+       * Only the first request to application takes a long time, but subsequent requests from the client will be faster.
+       * For a module to load eagerly, it must be referenced in the app module (root module).
+
+  2) Lazy loading: 
+  --------------------
+       * Lazy loading modules are loaded on demand when the user navigates to the routes in those respective modules.
+       * To lazily load a module, it should not be referenced in any other module.
+       * Routes in the module to lazy load should have some common route prefix.
+       * Downside of lazy loading, when route in a lazy loaded module is first requested, the user has to wait for that module to be loaded.
+  
+  3) Preloading:
+  --------------------
+       * It is also called as "Eager lazy loading".
+       * First the module to bootstrap the application [ Root Module ] and eagerly loaded modules are downloaded to the client side. The application is up and running and user is interacting with it.
+      * Modules that configured to preload are then downloaded in the background.
+ 
+  
+BookModule:
+-----------------
+  book.routes.ts
+
+Customer Module:
+------------------------
+  customer.routes.ts
+
+AppModule:
+----------------
+   app.routes.ts  
+
+
+app-routing.module.ts
+
+* We need to load customer module lazily.
+  
+    -- We should not reference customer module from any other module.
+    -- In app.routes.ts file
+
+        {  path: 'customers',  loadChildren: () => import('./customer/customer.module').then(m => m.CustomerModule)   } 
+
+
+Promise vs Observables:
+-------------------------------
+
+      fetchEmployees();    => Making REST API call to get list of employees from server application.
+
+      let employees = fetchEmployees();    // asynchronous
+
+     * Return type of this method will be either promise or observable. 
+
+    Case 1: If return type of this method is promise object, then promise object will be either resolved or rejected.
+
+       let promise = fetchEmployees();  
+     
+       promise.then((data) => console.log(data);   // data is list of employees.)    // if promise is resolved, then() callback will be called.
+                  .catch((error)  => console.log(error); )   // if promise is rejected, catch() callback will be called.
+
+      OR
+
+      promise.then((data) => console.log(data),
+                          (error) => console.log(error););
+                   
+
+ Observables: 
+ ----------------
+   -- It is not a part of Angular. It is from rxjs library (Reactive Extension for JavaScript). 
+   -- It is one of the dependencies used by angular. 
+   -- HTTP APIs in angular makes use of observable for asynchrnous communication. It is similar to promise concept.
+   -- An observable is actually a stream of data.
+
+
+1) If an application unsubscribe to an observable then it stops receiving the data.
+2) If observer pushes an error in observable, then stream of data will be closed.
+3) If observer sends completion signal, then stream of data will be closed. 
+
+Lets do it practically.
+--------------------------------
+
+1) How to create a stream? (observable)
+2) How to push the data in observable? (Observer)
+3) How to subscribe to observable? (App / component) 
+
+Steps:
+---------
+
+ 1) How to create a stream? Observable.
+ -- Create an instance of Observable<T> class. We can create an object using new or rxjs operators.
+     
+     this.ob = new Observable((observer) => { });
+
+2) Push the data into observable using observer. Use next() method of observer instance to push the data.
+
+3) Subscribe to observable. Use subscribe() method of observable instance.
+
+  this.ob.subscribe(
+      value => {
+        console.log(value);
+      },
+      error => {
+        console.log(error);
+      },
+      () => {
+        console.log('Job is done.');
+      }
+    );
+
+4) Unsubscribe from the observable (stop receiving the data). Use the unsubscribe() method of Subscription object.
+
+
+
+How to read route parameters?
+--------------------------------------
+
+  * To read route parameters, we have to use ActivatedRoute service.
+  * We have to inject ActivatedRoute depedency.
+
+
+
+How to make HTTP calls (REST APIs) ?
+-----------------------------------------------
+
+   a) Import HttpClientModule from "@angular/common/http".
+   b) We have to use HttpClient service.  
+
+  Main Endpoint for getting list of books based on cateogry:  http://localhost:8000/books/:category
+
+   http://localhost:8000/books/programming
+   http://localhost:8000/books/business   
+   http://localhost:8000/books/biographies
+
+  * Endpoint to get book details based on its ID:   http://localhost:8000/book/:bookId
+
+   http://localhost:8000/book/101
+     
+  
+
+   http://www.amazoon.com/employees/101/addresses/1
+
+  /employees/:empId/address/:addressId
+
+  { empId: 101, addressId: 1 }
+
+  let employeeId = params["empId"];
+  let addressId = params["addressId"];
+
+   
+  books/:category
+
+  { category: "pragramming" }
+
+  let category = params["category"]; 
+ 
+
+  * For programmatic navigation, we have to use another service called as "Router".
+  * We have to inject "Router" service. 
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  * How to setup backend?
+  ---------------------------------
+
+  * Download mongodb.zip file from  "https://www.mongodb.com/try/download/community"
+
+     select package => zip  (not msi).
+    Extract mongodb.zip file
+
+  * Create  "C:\data\db" folder  
+   
+ * Go to bin folder of mongodb
+
+   1) Click on mongod.exe  [ It will start your server ]
+   2) Click on mongo.exe   [ It will start your client ]
+   3) Open e-commerce-dataset.txt file and copy paste into mongo.exe shell  and finally hit "enter".
+ 
+++++++===   
+
+   1) Extract "e-commerce-api.zip" file. 
+   2) Then go to the "e-commerce-api" folder and open CMD
+   3) Execute "npm install" command
+   4) Execute "node app.js"
+
+ 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Angular Forms and Validations:                       
+---------------------------------------
+
+  a) Template-driven forms  ( Use 2-way data binding and also provide "name" attribute for every form control)
+  b) ReactiveForms
+         
+* Whenever an angular sees <form> tag, it automatically attaches "ngForm" directive to the form tag.
+* ngForm provides information about form controls, their values, states (valid or invalid) also state of a form (valid or invalid).
+* ngForm directive tracks all of form controls and monitor their state, values and properties.
+
+* Import FormsModule. (to use ngModel)
+
+ngModel provides following 6 classes:
+----------------------------------------------
+  
+  ng-untouched        ng-touched
+  ng-pristine            ng-dirty
+  ng-valid                ng-invalid
+
+ngModel also provides corresponding properties to these classes.
+--------------------------------------------------------------------------------
+
+class               =>  boolean property
+
+ng-untouched   =>  untouched
+ng-touched       => touched
+ng-pristine       =>  pristine
+ng-dirty           =>  dirty
+ng-valid           =>  valid
+ng-invalid        =>  invalid
+	
+* These are boolean properties.
+
+* How to get these properties???
+
+   template_reference_variable="ngModel"
+
+    #email="ngModel"
+
+* One more important property of template reference variable is "errors". This property is an object that is populated with validators.
+
++++++++++++++++++++++++++++++++++++++++++++
+
+1) Reactive Forms  =>  Import ReactiveFormsModule.
+2) Router Guards:
+
+Route Guards:
+---------------  
+
+1) CanDeactivate:  Guard navigation away from current route
+
+2) CanActivate: Guard navigation to route
+
+3) CanActivateChild: Guard navigation to child route
+
+4) Resolve: Performs route data retrieval before route activation
+
+5) CanLoad: Guard navigation to the feature module loaded asynchronously.
+
+
+Steps:
+--------
+
+  1) Build a Router Guard (Angular Service)
+  2) Register that guard with Angular dependency injection system
+  3) Tie that guard to a route    
+
+
+3) Class Binding and Style binding
+
+
+   <p [class]=" 'hightlight myclass' " > This is a simple paragraph </p>
+
+  <p [class]=" 'myclass' "> This is a simple paragraph" 
+
+
+Explore:
+------------
+1) Angular Component lifecycle hooks:
+2) Class and style bindings
+3) Other Router Guards
+4) Explore @ViewChild() decorator.
+5) How to handle service errors?
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+Assignment:
+-------------------
+
+1) Implement JobService and make HTTP GET request to get all jobs and specific job by id.
+2) 
+
+
+   
+class binding:
+-----------------
+
+  <div [class.<classs_name>]="true">
+  </div>
+
+  
+
+
+ 
+
+                   
+
+
+      
+
+  
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  

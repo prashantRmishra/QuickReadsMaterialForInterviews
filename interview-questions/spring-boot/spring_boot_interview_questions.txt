@@ -1,0 +1,29 @@
+Spring Boot Interview Questions:
+--------------------------------------------
+
+1) Spring Boot Features?   OR    Advantage of using Spring Boot?
+2) What is @SpringBootApplication?
+3) What is autoconfiguration and how does Spring boot does auto-configuration? How to Disable a Specific Auto-Configuration? How to Register a Custom Auto-Configuration?
+4) What is profiles in Spring boot?
+5) What is ResponseEntity class?
+6) What is a use of devtools?
+7) Different embedded servers supported by Spring boot? Which is default one? and how we can use another embedded server?
+8) Different ways of creating spring boot application?
+9) Explain SpringApplication.run(...) method.
+10) What are the advantages of starter poms?
+11) What is content negotiation and how we can achieve it in Spring boot?
+12) Different ways of handling exceptions in Sprinig boot?  => You suppose to explain @ExceptionHandler and @ControllerAdvice
+13) How you document your REST APIs?  => You suppose to explain about swagger
+14) What is spring boot actuator? Can we create custom endpoint and how? 
+15) How to enable cors in spring boot?
+16) What is Spring Data JPA? How we can define our custom queries?
+17) What Are Possible Sources of External Configuration?
+18) Which Is a Better Way to Configure a Spring Boot Project – Using Properties or YAML?  [ What are advantages of yaml over proeprties file OR difference between yaml and properties file ]
+19) Spring framework vs Spring boot.
+
+
+You can use below link for reference. Also use our classroom session notes for preparation.
+
+https://www.baeldung.com/spring-boot-interview-questions
+
+

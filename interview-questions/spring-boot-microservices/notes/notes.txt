@@ -1,0 +1,636 @@
+Spring Microservices and Spring Cloud:
+------------------------------------------------
+
+3 Microservices (3 Spring boot projects)  => Communication
+
+a) Eureka Server (Service Discovery Pattern)
+b) Config Server (Externalize microservices configuration)  & Spring Cloud Bus
+c) Hystrix - Circuit Breaker Pattern (Fault Tolerance and Resilience) 
+d) API Gateways (Entry point)
+e) Distributed Tracing with Zipkin server
+
+Agenda:
+
+Spring Boot microservices:
+
+1) Spring Boot
+    -- DevTools
+    -- Auto Configuration
+    -- Dependency Management
+    -- Dependency versions
+    -- Actuators
+    -- Profiles
+    -- Embedded servers
+    -- In-memory database support
+    etc...
+
+2) Monolithic application
+    Microservices 
+      -- Advantages
+      -- Principles
+      
+      Spring Cloud:
+        -- Service Discovery Pattern - Using Eureka Server
+        -- Load Balancing using Ribbon
+        -- Zuul API Gateway
+        -- Circuit Breaker Pattern using Hystrix
+        -- Centralized Configuration using Spring Config Server
+        -- Centralized logging
+
+
+Spring Boot:
+
+   -- Auto Configuration
+   -- Opinionated 
+   -- Dependency Management
+   -- starter projects
+   -- Embedded Servers --  Tomcat, Jetty, Undertow 
+   -- jar file 
+   -- In-memory database [Development and testing purpose] [H2, Derby]
+   -- application.properties
+   -- Best for creating Microservices
+   -- Profiles 
+      application-dev.properties
+      application-prod.properties  
+      application-test.properties
+      application.proprties
+   -- Actuators - 
+      -- Monitoring our application in production environment.
+
+-- spring-boot-starter-data-jpa
+       
+
+Monolithic Application:
+------------------------------
+
+  -- E-commerce application (Spring MVC WebApp)
+        -- Product Service  [ ProductController, ProductService, ProductDao]
+        -- Customer Service [ CustomerController, CustomerService, CustomerDao]
+        -- Cart Service
+        -- Order Service [OrderController, OrderService, OrderDao ]
+        -- Invoice Service
+        -- Payment Gateway Service
+        -- Notification Service [ SMS, Email ]
+
+  --  A monolithic application built as a single unit.
+  -- Enterprise Applications are often built in three main parts: a client-side user interface (consisting of HTML pages and javascript running in a browser on the user's machine) a database (consisting of many tables inserted into a common, and usually relational, database management system), and a server-side application. The server-side application will handle HTTP requests, execute domain logic, retrieve and update data from the database, and select and populate HTML views to be sent to the browser.
+  -- This server-side application is a monolith - a single logical executable. Any changes to the system involve building and deploying a new version of the server-side application.
+  -- All your logic for handling a request runs in a single process, allowing you to use the basic features of your language to divide up the application into classes, functionss and packages. With some care, you can run and test the application on a developer's laptop, and use a deployment pipeline to ensure that changes are properly tested and deployed into production. You can horizontally scale the monolithic by running many instances behind a load-balancer.
+ 
+      Problems:
+      -------------
+       a)  A change made to a small part of the application, requires the entire monolith to be rebuilt and deployed.
+       b)  Scaling requires scaling of the entire application rather than parts of it that require greater resource.
+           
+
+Micro + services:
+ 
+   * Different way of building an application.
+   * Breaks monolithic application into various services
+   * E-commerce monolithic application is broken down into various services
+       a) Product Service       
+       b) Customer Service
+       c) Order Service
+       d) Cart Service
+   * Self dependent, self deployable, managed independently without affecting other services.
+   * Microservices can have their own database.  
+   * Microservices communicate with each other using HTTP protocol or messaging protocols.
+   * For each microservice, We will create a seaparte Spring Boot Project.
+   * Makes release early, fast development. (because we can update required service without affecting other services)
+   * Modularity
+   * Scalability (we can scale product service, if needed without scaling whole application(Other microservices))
+   *  If one service goes down, still our application functions properly except service that is down or the services that are dependent on service which is down.
+
+Smart endpoints and dumb pipes:
+-------------------------------------------
+-- When it comes to communication between different microservices, the two protocols used most commonly are HTTP request-response with resource API's and lightweight messaging.
+-- The second approach in common use is messaging over a lightweight message bus. The infrastructure chosen is typically dumb (dumb as in acts as a message router only) - simple implementations such as RabbitMQ or ZeroMQ don't do much more than provide a reliable asynchronous fabric - the smarts still live in the end points that are producing and consuming messages; in the services.
+
+12-Factor App
+Analogy Honeycomb
+
+
+Advantages:
+------------
+
+-- Easy scaling ( scale on same system or multiple system)
+
+Containerization:
+------------------
+   
+   -- Easy deployment.
+   -- App can run on any environment and platform.   
+   -- App is packaged with all its dependencies, required softwares, configurations and environment in which it has to run.   
+ 
+How to create Spring Boot application?
+
+ -- Spring Initializer (start.spring.io)
+ -- Spring Starter Project by IDEs
+ -- Spring Boot CLI (Command Line Interface)
+
+@SpringBootApplication - combination of 3 annotation:  @ComponentScan, @EnableAutoConfiguration, @SpringBootConfiguration
+
+@RestController vs @Controller
+
+@RestController - combination of 2 anotations: @Controller, @ResponseBody
+
+@GetMapping
+@PostMapping
+@PutMapping 
+@DeleteMapping  
+
+DevTools:
+
+-- By default, any entry on the classpath that point to a folder will be monitored for changes.
+-- These will not trigger restart:  /META-INF/maven, /META-INF/resources, /static, /templates /public
+-- Folders can be configured: spring.devtools.restart.exclude=/abc
+-- Additional paths: spring.devtools.restart.additional-paths
+-- spring.devtools.livereload.enabled=false
+
+Content Negotiation:
+
+Spring Data:
+
+Relational                  MongoDB
+
+database                   database
+Tables	                  Collection
+Record                      Document 
+
+@Entity		     @Document
+@Table                      
+@Id 
+
+
+How one microservice calls another?
+-- RestTemplate Or WebClient
+-- Feign Client
+
+1) Hard Coded URLs:
+
+Why Hard coded URLs are bad?
+
+-- Change in URL requires code updates.
+-- If we deploy our application on any cloud provider like AWS, GCP etc..., we will get dynamic URLs.
+-- Load Balancing
+-- Based on environments, URLs will be different. (dev, test/QA, prod)
+
+
+Service Discovery Pattern:
+----------------------------------
+
+
+
+
+
+Netflix: 
+   
+
+Spring Cloud:
+
+   -- Eureka Server
+   -- Ribbon
+   -- Config Server
+   -- Zuul
+   -- Hystrix
+
+Lets implement Eureka Server:
+
+Steps:
+-----------
+a) We need to start the Eureka Server
+b) Have microservices register themeselves to Eureka Server using Eureka Client
+c) Have microservices locate (consume) other microservices using Eureka Client.
+
+By default port number of Eureka Server is 8761
+
+-- Technology to implement service discovery pattern that Spring cloud uses is "Eureka"
+
+Netflix Open Source:
+
+  a) Eureka is one of the projects that made open source thanks to netflix
+  b) Netflix has bunch of libraries and later they madet them open source
+
+-- Eureka
+-- Ribbon
+-- Zuul
+-- Hystrix
+
+-- Spring provides abstraction layer over these technologies
+-- We will use Spring cloud Eureka to discover the URLs instead of hardcoding them.
+
+
+Q. What's the difference between @EnableEurekaClient and @EnableDiscoveryClient?
+
+There are multiple implementations of "Discovery Service" (eureka, consul, zookeeper). @EnableDiscoveryClient lives in spring-cloud-commons and picks the implementation on the classpath. @EnableEurekaClient lives in spring-cloud-netflix and only works for eureka. If eureka is on your classpath, they are effectively the same.
+
+Another way to call other microservices:
+
+a) using feign client:
+
+Steps:
+
+a) We have to add openfeign dependency.
+
+We generally create a service discovery like Eureka, where each service instance registers when bootstrapped.
+Eureka server maintains a service registry; it maintains all the instances of the service as a key/value map, where the {service id} of your microservice serves as the key and instances serve as the value.
+Now, if one microservice wants to communicate with another microservice, it generally looks up the service registry using DiscoveryClient and Eureka server returns all the instances of the calling microservice to the caller service. Then it was a caller service headache which instance it calls. Here, client side load balancing stepped in. Client side load balancing maintains an algorithm like round robin or zone specific, by which it can invoke instances of calling services. 
+The advantage is service registry always updates itself; if one instance goes down, it removes it from its registry, so when the client side load balancer talks to the Eureka server, it always updates itself, so there is no manual intervention- unlike server side load balancing- to remove an instance.
+Another advantage is, as the load balancer is in the client side, you can control its load balancing algorithm programmatically. Ribbon provides this facility, so we will use Ribbon for client side load balancing.
+
+2) Add spring-cloud-starter-netflix-ribbon dependency
+3) Create a   for every micorservice that you want to call.
+
+
+-- Config Server
+-- Hystrix
+-- Zuul API Gateway
+-- Zipkin Tracing
+-- Actuators
+-- Profiles
+
+
+Centralized Configuration: [Config Server]
+
+Why Centralized Configuration?
+
+When we talk about microservices architecture, we visualize a large number of small microservices talking to each other.
+The interesting part is that each of these microservices can have its own configuration.
+
+Such configuration includes details such as:
+
+Application configuration
+Database configuration
+Communication Channel Configuration - queues and other infrastructure
+URLs of other microservices to talk to
+In addition, each microservice would have a separate configuration for different environments, such as development, qa and production.
+
+* Spring Boot provides feature "Profiling".
+
+dev
+prod
+test
+
+* What else if configuration changes.?
+-- If configuration changes, We need to update application.properties file. We need to repackaged, redeploy our application. [All running instances of that application we need to redeploy with the new changes].
+
+Configuration for all microservices (for all environments) is stored at one place - a centralized configuration store.
+When a microservice needs its configuration, it provides an id at launch - a combination of microservice name and the environment.
+
+The centralize config server looks up the configuration and provides the configuration to the microservice.
+
+
+Setup Config Server:
+
+1) Create a new Spring boot starter project
+2) Add the dependencies:   config-server and eureka-discovery-client
+3) Add annotation @EnableConfigServer
+4) Update application.properties file of config server. Specify the path where configurations are kept
+
+    server.port=8888
+
+    spring.profiles.active=native 
+   (Because you’re using the filesystem for storing application configuration information, you need to tell Spring Cloud configuration server to run with the     “native” profile)
+
+    spring.cloud.config.server.native.search-locations=file:///C:\\AmitF\\Training_Docs\\Spring_Training_Feb\\config\\{application}
+    The important parameter in the configuration entry is the searchLocations attribute. This attribute provides a comma separated list of the directories for     each application that’s going to have properties managed by the configuration server.
+ 
+
+5) Add config-client dependency in all services.
+6) Remove application.properties file from all services and add bootstrap.properties
+  
+     We need to add below tag in pom.xml under <build> tag.
+
+    		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>*.properties</include>
+					<include>common-config/</include>
+				</includes>
+			</resource>
+		</resources>   
+
+7) Update bootstrap.properties file and specify the location of config server.
+
+    spring.cloud.config.discovery.enabled=true
+    spring.cloud.config.discovery.serviceId=config-server
+    spring.cloud.config.uri=http://config-server
+
+* SERVING CONFIGURATION FROM GIT SUBPATHS
+
+-- If you want to store configuration files in subpath instead of root path of git repo, we can configure it with below   
+   property. For eg. You have created "config" folder in root path of git repo.   
+   
+   spring.cloud.config.server.git.search-paths = config 
+
+-- you can have Config Server serve from multiple paths by listing them, separated by commas
+
+   spring.cloud.config.server.git.search-paths = config, moreConfig 
+
+-- spring.cloud.config.server.git.search-paths = config, more*
+
+   Config Server will serve configuration from /config as well as any subdirectory whose name begins with “more.”    
+   
+-- The spring.cloud.config.server.git.default-label property overrides the default label or branch.
+   
+   spring.cloud.config.server.git.default-label = new-feature     
+
+
+-- Spring Cloud Bus
+
+* Spring Cloud Bus:
+
+-- Application when started reads configuration from config server, if we make any changes after microservices have run, then
+   we have to restart the services.
+-- Spring Cloud Bus helps us to push configuration changes to all microservices while they are running.
+-- Microservices do not need to be restarted to receive these updated configuration changes and to use these updated 
+   configurations.
+-- To use Spring Cloud bus, we don't need to create a separate standalone microservice. We have to just add 2 dependencies, 
+   spring cloud bus and actuators.   
+-- Microservices act as subscribers/listeners to receive updates from Spring cloud config server.
+-- Messaging technology is used to broadcast all the changes to all microservices. 
+-- Protocol use in communication is AMQP (Advanced Message Queuing Protocol). Asynchronous messaging.
+-- Message Broker need to be configured, RabbitMQ. It is an intermediary for messaging. It gives common platform to send and 
+   receive messages and for messages a safe place to live until they are received.
+-- We have to make configuration so that all microservices will be subscribed for configuration updates, Spring cloud bus can 
+   broadcast configuration changes and all our microservices will be able to recieve those changes.
+
+http://localhost:8888/actuator/bus-refresh
+POST request
+   
+   
+* Add Dependencies:
+
+-- spring cloud bus amqp
+-- actuators
+
+
+* Broadcast the changes:
+
+-- Once we update configuration in git repo, we need to tell spring cloud bus that its time to broadcast configuration changes
+   all microservices that have subscribed to these udpates.
+-- We can do this by sending http post request to an actuator endpoint called /bus-refresh.
+-- This will make spring cloud server to load new configuration from git repo and it also makes spring cloud bus to broadcast 
+   these configuration changes to all subscribed microservices.
+-- /bus-refresh endpoint helps to clear the refresh scope cache and rebind configuration properties in our microservices.
+-- Enable /bus-refresh endpoint.
+-- management.endpoints.web.exposure.include=bus-refresh in application.properties
+
+
+* Install and run RabbitMQ server
+
+-- 
+
+* For our application to communicate with spring cloud bus and spring cloud bus to communicate with all our microservices, 
+  Both need to connect to RabbitMQ.
+
+-- application.properties of config server.
+
+    spring.rabbitmq.host = localhost
+    spring.rabbitmq.port = 5672
+    spring.rabbitmq.username = guest
+    spring.rabbitmq.password = guest
+
+-- Add to all microservices.	 
+
+
+
+
+
+
+
+
+Actuator:
+
+-- We can monitor and manage our production ready application by using "Actuator"
+-- /env, /metrics, /beans, /mappings, /health, /shutdown, /dump etc....
+-- 
+
+
+API Gateways:
+
+-- Cross Cutting Concerns 
+-- Security, Logging, Transaction, Messaging 
+-- Interceptors, Filters
+
+-- Authentication, Authorization an security
+-- Logging
+-- Rate Limits 
+-- Service Aggregations 
+-- Fault Tolerant
+-- Hide actual APIs from Client.
+-- In Built Ribbon load balancer
+
+How to setup Zuul API Gateway?
+
+-- We need to create spring boot application.
+-- We have to add dependency
+
+    <dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+    </dependency>
+
+-- Add @EnableZuulProxy annotation in main class.
+
+
+http://localhost:8765/movie-catalog-service/api/catalog/amitfegade?token=abdsadsadsahwecdscdscvrfkdsfdsmfsfdsdsfdsfb
+
+http://localhost:8765/movie-catalog-service/api/catalog/amitfegade?token=aasdsadsdsaddahwecdscdscvrfkdsfdsmfsfdsdsfdsfb
+
+request.getParameter("token")
+
+github-webhook
+
+Vault Server
+Hystrix 
+Distributed Tracing using Zipkin and sleuth
+Centralized Logging using ELK
+
+
+
+
+
+Hystrix (Circuit Breaker Pattern):
+
+   a) Fault Tolerance and Resiliance:
+   b) Hystrix
+   
+   a) Fault Tolerance: Fault Tolerance means, given an application, if there is specific fault, what is an impact of that fault?
+                       How much tolerance a system has for a specific fault?
+					   For eg. If one microservice goes down what will happen to your microservice application?
+					    Is your whole application goes down? OR some application functionality goes down? OR do you have some way of handling failures, so that there will be no impact at all.
+						* what tolerance your system has for a specific fault is called as "Fault Tolerance".
+	
+   b) Resiliance: How many faults a system can tolerare, that indicates how resiliance it is. A system tries to recover from 
+                  faults, OR Is there any mechanism so that it can correct itself, that part goes into Resiliance.
+
+   
+
+* Common Issues with Microservices?
+
+  a) What if one microservice goes down?
+  Solution:- We should have multiple instanced for that microservice.
+
+  b) A microservice instance is slow?
+  Solution:   
+     
+			
+			
+		request ------> Thread -------> Process the request and gives response back     -- A	 
+		request ------> Thread -------> Process the request and gives response back     -- B
+		request ------> Thread -------> Process the request and gives response back     -- A 
+		request ------> Thread -------> Process the request and gives response back     -- A
+		request ------> Thread -------> Process the request and gives response back     -- A
+		
+		request ------> Thread -------> Process the request and gives response back     -- B
+		request ------> Thread -------> Process the request and gives response back     -- A
+		request ------> Thread -------> Process the request and gives response back     -- B
+		
+		----- If all the threads are utilized by A [due to slow microservice in A], no threads are available to process request for B.
+                
+
+     * What is a solution?
+        -- Setting timeouts.	
+        -- Partially solves the problem.
+
+       b) Circuit Breaker Pattern (Hystrix)
+       -- Its basic functionality is to interrupt current flow after fault is detected.
+       -- Unlike fuse, which operates once and then must be replaced, a circuit breaker can be reset (either manually or automatically) to resume normal operation.
+
+         1) Detect something is wrong.
+         2) Take temporary steps to avoid the situation getting worse.
+         3) Deactivate the "problem component" so that it doesn't affect downstream components.
+
+	   * When do circuit should break?
+  
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [SUCCESS]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [FAILED]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [SUCCESS] 
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [FAILED]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [FAILED]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [SUCCESS]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [FAILED]
+    request   ----> Thread  ------> Process the request & gives response back.    - A   [FAILED]
+
+    --- Last 'n' requests to consider for the decision - (for e.g. last 8 requests)
+    --- How many of those should fail? - (for e.g. 4 requests)
+    --- Timeout duration (for e.g. 3 seconds)
+    --- How long to wait(sleep window) - (for e.g. 10 seconds)
+
+  * If we are not sending requests to slow service after detecting the problem, what response we have to give back to the user?
+    -- Should we return error message to the user? 
+    -- We can return cached data.
+    -- We can give default response.
+ 
+  * Fallback - We need a fallback.
+    -- Throw an error
+    -- Save previous responses (cache) and use that when possible
+    -- Return a fallback "default" response.
+
+
+* What is Hystrix?:
+
+   -- Open source library originally created by Netflix.
+   -- Implements Circuit beaker pattern so we don't have to implement by our own.
+   -- Give the configuration parameters and it does the work.
+  
+* How to use Hystrix?
+
+  -- Add the maven spring-cloud-starter-netflix-hystrix dependency.
+  -- Add @EnableCircuitBreaker to the application class.
+  -- Add @HystrixCommand to the methods that need circuit breakers.
+  -- Configure Hystrix behavior.
+  
+  
+Hystrix Dashboard:
+-------------------
+-- Add binaries to classpath
+-- UI with display - What are the circuit breakers you have in your system, what are the circuits are opened, what are the circuits are closed, the number of requests that are coming in, the number of timed out happens. we get entire information about this in visual format.
+
+2 ways to set up this:
+a) for individual application/microservice
+b) one separate application that can be setup for bunch of other microservices.
+
+Add dependencies:
+a) spring-cloud-starter-netflix-hystrix-dashboard
+b) spring-boot-starter-actuator
+
+Add @EnableHystrixDashboard annotation to the application class.
+
+Add the below property to application.properties
+management.endpoints.web.exposure.include=hystrix.stream
+-- I am providing or exposing an end point in my application which streams hystrix data. I am exposing an endpoint hystrix.stream which is where the hystrix data is gonna be streamed and that hystrix dashboard is gonna do is gonna use to show the hystrix information.
+
+http://localhost:PORT/hystrix 
+
+Task: Create separate project for Hystrix Dashboard.
+
+
+
+---------------------------------
+
+Provide secure configuration:
+
+1) symmetric key: same key is used for encryption and decryption.
+2) Asymmetric key: public and private keys
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   

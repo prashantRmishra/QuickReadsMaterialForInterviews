@@ -1,0 +1,34 @@
+Distributed Tracing using Spring cloud Sleuth and Zipkin:
+------------------------------------------------------------------------
+
+-- Microservices architecture involve multiple services which interact with each other. So a functionality may involve call to multiple microservices. Usually for systems developed using Microservices architecture, there are many microservices involved. These microservices collaborate with each other.
+
+-- If suppose during such calls there are some issues like exception has occurred. Or may be there are latency issues due to a particular service taking more than expected time. How do we identify where the issue is occurring. 
+-- In regular project we would have used logging to analyze the logs to know more about occurred exceptions and also performance timing. But since microservices involves multiple services we cannot use regular logging. Each Service will be having its own separate logs. 
+--  So we will need to go through the logs of each service. Also how do we correlate the logs to a request call chain i.e which logs of microservices are related to Request1, which are related to Request2. To resolve these issues we make use of Spring Cloud Sleuth and Zipkin
+
+a) Spring Cloud Sleuth is used to generate and attach the trace id, span id to the logs so that these can then be used by tools like Zipkin and ELK for storage and analysis.
+b) Zipkin is a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures. Features include both the collection and lookup of this data.
+
+-- We will be adding the spring cloud sleuth for all the microservices. Using Spring Cloud Sleuth we will be adding a unique token to all requests. Spring Cloud Sleuth is used to generate and attach the trace id, span id to the logs so that these can then be used by tools like Zipkin and ELK for storage and analysis.
+
+-- In distributed tracing the data volumes can be very high so sampling can be important.This determines what amount of data you want to send to a centralized log analysis tool. If you want to send all the data or only a part of it. If you are exporting span data to Zipkin or Spring Cloud Stream, there is also an AlwaysSampler that exports everything and a PercentageBasedSampler that samples a fixed fraction of spans.
+
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-sleuth</artifactId>
+</dependency>
+
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-zipkin</artifactId>
+</dependency>
+
+-- Use Zipkin for distributed log analysis-
+
+-- Zipkin is a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures. Features include both the collection and lookup of this data.
+
+-- Download zipkin jar file and run it.
+-- Access zipkin dashboard on  http://localhost:9411
+
+

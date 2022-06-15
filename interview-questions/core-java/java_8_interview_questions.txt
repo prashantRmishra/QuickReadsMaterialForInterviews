@@ -1,0 +1,25 @@
+1) OOPsp principles
+2) Method overloading vs method overriding (Explain rules).
+3) Why string objects are immutable?
+4) StringBuffer vs StringBuilder
+5) Comparable vs Comparator. Advantages of Comparator
+6) How put() method of HashMap works?
+7) Importance of equals() and hashcode() method. What is a contract between equals() and hashcode() method.
+8) Explain TreeSet.
+9) Difference between ArrayList and LinkedList. Use cases of ArrayList and LinkedList. 
+10) Why Vector and Stack class are not used?
+11) Difference between HashMap and Hashtable.
+12) Why there is a category of Checked Exceptions? Why some exceptions are checked and others are unchecked? (Explain why)
+12) Explain Java 8 new features.
+13) Advantages of Lambda Expression. Before Java 8 what you were using??
+14) What is a functional interface? In which package functional interfaces are introduced in Java 8? Explain categories of functional interfaces.
+15) Explain use of Stream API. 
+16) Difference between map() and flatMap() method.
+17) Explain intermediate and terminal operations in stream api.
+18) Prepare most commonly used functional interfaces in Stream API. 
+     (hint: Interface and its abstract method. For eg. Predicate<T> interface has "public boolean test(T t) method.)
+19) Explain default and static methods of interface.
+20) Difference between throw and throws. New features added in Java 7 related to exceptions (Hint: try with resources and multicatch block)
+21) How to create custom exception?
+22) Explain exception chaining. (Hint - initCause() method)
+

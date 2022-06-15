@@ -1,0 +1,124 @@
+Service Discovery Pattern => Eureka Server
+Config Server
+Circuit Breaker Pattern => Hystrix
+API Gateway => Zuul 
+Spring Cloud Gateway
+Spring Cloud Bus
+Distributed Tracing => Zipkin Server
+
+Why
+What 
+How 
+
+Netflix
+-----------
+-- Created their own libraries.
+-- Later Netflix made those libraries open source => Netflix OSS.
+-- Spring Framework Team provided abstraction layer over libraries provided by Netflix.  
+
+Service Discovery => Eureka Server:
+--------------------------------------------
+
+Q. Why Service Discovery?  OR Why Eureka Server?
+---------------------------------------------------------------
+
+Q. Why Hard coded URLs are bad?
+-----------------------------------------
+-- Change in URL requires code updates. If there is updation in code, then we have to rebuild, repackage and redeploy our application.
+-- If we deploy our application on any cloud provider like AWS, GCP etc..., we will get dynamic URLs.
+-- Load Balancing. (If multiple instances of service are runnig, which service URL will you provide?)
+-- Based on environments, URLs of service will be different. (dev, test/QA, prod).
+
+
+Q. What is Service discovery?
+-------------------------------------
+Service Discovery is the process of how microservices discover/locate each other over a network. There are two main components of it in terms of Eureka service:
+
+1) Eureka server (service registry): It is a server that stores the addresses (host and ports) of all the registered microservices.
+
+2) Eureka Client: Its a microservice registered on the central server and it updates and retrieves addresses to/from the central Eureka server.
+
+-- Eureka provides service discovery in a microservices architecture. This involves two steps on a high level:
+
+a) Services registers themselves on the Eureka server and details like name, host, and port are stored there.
+
+b) Details of other registered microservices become available for the registered service.
+
+
+Service Discovery Pattern:
+---------------------------------
+Types of service discovery:  => 1) Client Side Service Discovery    2) Server Side Service Discovery
+
+Eureka Server => uses client-side service discovery.
+
+Q. What is Eureka Server and How to implement it?
+-----------------------------------------------------------------
+
+a) Create a new spring boot project which acts as discovery server / eureka server.
+b) Add Eureka server dependency.
+
+      <dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+     </dependency>
+
+c) Add @EnableEurekaServer annotation to main class.
+d) By default, Eureka Server runs on port 8761, All microservices by default looking for eureka server running on port 8761 and register themselves to eureka server.
+    [ But we can change the port number of Eureka Server ]
+
+-- Eureka server has a built-in Eureka client also. As in production, generally there is a cluster of Eureka servers and they register among themselves as client. But for learning purposes, we are running the server on the localhost and we don’t need a cluster. So we need to switch off the client's behavior so that it doesn't try to register itself. 
+
+-- We have specified the service-url which is the URL of itself as there is no other server (standalone mode). If we don't specify this, the Eureka server will still run on the port specified and we will be able to access the UI at the same port.
+
+Next Step:
+--------------
+
+a) Add eureka client dependency in all microservices.
+b) Add @EnableEurekaClient annotation to main class of all microservices.
+
+    <dependency>
+         <groupId>org.springframework.cloud</groupId>
+         <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+
+
+-- Autowire the DiscoveryClient and use it to get the URI of other microservices.
+-- The autowired discovery client is used to get all the instances of the service registered at Eureka server.
+
+Client-side load balancing:
+---------------------------------
+
+-- The @LoadBalanced annotation on the RestTemplate indicates that we want it to be load balanced.
+
+
+* Setup Multiple Eureka Servers (Cluster)
+----------------------------------------------------
+-- We have created only one Eureka server. But what if it goes down? Microservices will not be able to communicate with each other and hence, our server becomes a single point of failure. To avoid that, in production, there's generally a cluster of Eureka servers with 2 or more servers.
+
+
+Some Important notes on Eureka:
+--------------------------------------------
+
+-- An application registered with Eureka is known as Eureka instance. Every Eureka instance is also a Eureka Client as it can fetch the details of other Eureka instances also.
+
+-- If we are using the Eureka server in standalone mode, i.e. there’s only one Eureka server then we need to set eureka.client.fetch-registry and eureka.client.register-with-eureka to false so that it doesn’t try to register itself with itself as the Eureka server also has a built-in Eureka client.
+
+-- A service is registered with the Eureka server when the eureka.client.register-with-eureka is set to true (by default, true) and it becomes an Eureka instance. Then this instance keeps sending heartbeats to the Eureka server. If Eureka server doesn’t receive a heartbeat from any instance within a particular time limit (by default, 30 secs) then it will consider that instance as DOWN and will de-register it from the service registry.
+
+-- A Eureka instance is also a Eureka client as it fetches the registry from Eureka server containing the details of other instances. In order to enable it, eureka.client.fetch-registry is set to true (by default, true). As soon as a service registers itself with the server, it fetches the registry and caches it. It keeps on checking the registry at regular interval (by default, 30 secs) and if there is any change in the registry, it fetches the update only and the unchanged part is still used from the cache.
+
+-- Each Eureka instance uses a service endpoint, DiscoveryClient in order to get a list of all the ServiceInstance instances of the services registered on the registry. We can also see all the registered instances at http://localhost:5555/eureka/apps
+
+
+
+
+
+
+
+
+
+
+
+
+
+

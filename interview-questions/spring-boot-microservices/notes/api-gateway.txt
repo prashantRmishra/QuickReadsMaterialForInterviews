@@ -1,0 +1,63 @@
+Spring Cloud Gateway:
+-------------------------------
+Zuul API Gateway => From spring-cloud-netflix
+
+-- Zuul is a blocking API. A blocking gateway api makes use of as many threads as the number of incoming requests, this approach is more resource intensive.
+-- If no threads are available to process incoming request then the request has to wait in the queue.
+
+Spring Cloud Gatway => spring-cloud
+
+-- Spring cloud gateway is a non blocking API. When using non blocking API, a thread is always available to process the incoming request. These requests are processed asynchronously in the background and once completed the response is returned, so no incoming request never gets blocked when using spring cloud gateway.
+
+
+How to implement Spring Cloud Gateway:
+-----------------------------------------------------
+
+a) Create a new Spring Boot project and add Spring Cloud Gateway, hystrix and eureka client dependency .
+b) Write a mapping for URL on API gateway.
+c) Redirect all requests through API gateway.
+
+Architecture of Spring API Gateway:
+-------------------------------------------------
+
+Basic building blocks of Spring API Gateway:
+
+a) Route => It consist of 3 things   1) Id  
+                                                     2) Destination URL
+                                                     3) Collection of Predicates and filters.
+
+-- A route is matched if aggregate predicate is true.
+-- Predicate => This is similar to Java 8 Functional interface Predicate. Using this functionality, we can match HTTP request, such as headers, url, cookies, parameters.
+-- Filter => These are objects of GatewayFilter. Using filter, we can modify the request or response as per the requirements.  
+
+
+Using spring cloud gateway, we can create routes using 2 ways:
+
+a) Java based configuration
+b) Property based configuration (declarative way) -> using application.properties / application.yml file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+

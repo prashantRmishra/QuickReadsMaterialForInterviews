@@ -1,0 +1,656 @@
+Spring Microservices and Spring Cloud:
+--------------------------------------------------
+
+Monolithic:
+---------------
+
+E-commerce application:
+-----------------------------------
+
+   a) Product Service      => Controller, Service, Dao, Model, UI 
+   b) Customer Service   
+   c) Cart Service
+   d) Order Service
+   e) Payment Service
+
+Presentation Layer (UI)
+Business Layer       
+Data Layer 
+
+  -- Finally when we package our application , we have heavy .war file.
+  
+What are the common problems with monolithic architecture:
+----------------------------------------------------------------------------
+  
+    1) Scalalbility: If there is high traffic for the product service, so we need to scale it. We will take .war file and deploy on other servers. Problem => we scaled entire                             application not product service. 
+
+    2) Code change: If there is requirement to change a code, we need to recompile, test and rebuild / repackage our application, so frequent release cycle is not possible.
+                              We have redeploy our application on each and every machine.
+
+    3) Stick to one technology.
+ 
+Microservices:
+-------------------
+ 
+ -- different way / approach of building an application.
+ -- We break monolithic application into the smaller services.
+   
+E-commerce application:
+-----------------------------------
+
+   a) Product Service      => Controller, Service, Dao, Model, UI 
+   b) Customer Service   
+   c) Cart Service
+   d) Order Service
+   e) Payment Service
+
+ -- All these services are separate projects / applications. 
+ -- Independent services.
+ -- These services are developed and deployed independently. 
+ -- There will be inter-communication between these microservices.
+ -- Each microservice can have its own database.
+ -- Modularity.
+ -- Polygot 
+ -- Scalability (We can scale product services if needed without scaling other microservices)
+ -- Makes release early, fast development (Frequent release cycle. Frequent code change). 
+ 
+Microservices patterns
+Microservices Principles
+12 Factor app
+
+Rajesh RV => Spring Microservices.  Book
+Spring Microserivces in action.  
+
+microservices.io   
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+MongoDB:
+-------------
+-- NoSQL Database
+-- Document Type Database
+-- MEAN => MongoDB   Express  Angular  Node JS  => All are related to the JavaScript.
+
+Q. How to start MongoDB?
+
+> mongod   [ Database server ]   => By default, <drive>:\data\db folder.  This is a folder where mongodb stores files related to database.
+
+> mongod --dbpath=<path_of_database_folder>
+
+> mongo   [ client ]
+
+-- By default, mongodb runs on port 27017.
+
+> show dbs      => Display all available databases.
+
+> db      => Display current database.
+
+> use <database_name>     => This command is used to switch database. If database doesn't exist, it will create a new and switch to it.
+
+--------------------------------------------------------------
+RDBMS                         |                          MongoDB |
+--------------------------------------------------------------
+Database                     |                         Database  |
+Table                           |                         Collection |
+Record / Row / Tuple   |                        Document  |
+---------------------------------------------------------------
+
+> show collections;         => Display all the collections in current database.
+
+> db.createCollection("<collection_name>");    => Create a new empty collection.
+
+> db.createCollection("employees");    => Create a new empty "employees" collection.
+
+> db.employees.insert({ id: 1, name: "Alex Browning", department: "HR", salary: 34000 });   => Insert a new document in employees collection.  
+   If a collection does not exists, it will create a new collection and inserts a record. 
+
+> db.employees.insert({ id: 2, name: "Jason Taylor", department: "ADMIN", salary: 24000 });
+
+> db.employees.find();     => Used to retrieve data from employees collection. [ Similar to => select * from employees; ]
+
+> db.employees.find().pretty()  
+
+> db.employees.update({ id: 2}, { $set: { salary: 35000, department: "SALES" }});    => Used to update record. 
+   [ Similar to =>   UPDATE employees SET salary=35000, department='SALES' WHERE id=2]
+
+> db.employees.remove( { id: 2 });     => Used to remove document from employees collection. [ Similar to => DELETE FROM employees WHERE id=2 ]
+
+> db.employees.remove({ })   => Used to remove all documents from employees collection [ Similar to => DELETE FROM employees ]
+
+> db.employees.find().count()   => Used to find total no. of documents inside employees collection.  [ Similar to => SELECT count(*) FROM employees ]
+
+> db.employees.drop()   => Used to drop a collection  [ Similar to => DROP TABLE employees ]
+
+> db.dropDatabase()  => Used to drop a database.
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Spring Cloud:
+-----------------
+  * Eureka Server
+  * Config Server
+  * Hystrix 
+  * API Gateway
+
+
+<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Hoxton.SR1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+2.2.4.RELEASE
+
+<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.20</version>
+			<scope>provided</scope>
+		</dependency>
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Raw Database For Movies:
+-----------------------------------
+
+{
+    "movieId": 101,
+    "title": "Titanic",
+    "releaseYear": 1997,
+    "casts": [ "Kate Winslet", "Leonardo Dicaprio" ],
+    "directors": ["James Cameron"]
+}
+
+{
+    "movieId": 102,
+    "title": "The Avengers",
+    "releaseYear": 2012,
+    "casts": [ "Chris Evans", "Robert Downey Jr.", "Cobie Smulders" ],
+    "directors": ["Joss Whedon"]
+}
+
+{
+    "movieId": 103,
+    "title": "Men In Black",
+    "releaseYear": 1997,
+    "casts": [ "Will Smith", "Tommy Lee Jones", "Linda Fiorentino" ],
+    "directors": ["Barry Sonnenfeld"]
+}
+
+{
+    "movieId": 104,
+    "title": "The Terminator",
+    "releaseYear": 1984,
+    "casts": [ "Arnold Schwarzenegger", "Michael Biehn", "Linda Hamilton" ],
+    "directors": ["Barry Sonnenfeld"]
+}
+
+
+Raw Data for MovieRatings
+-----------------------------------
+
+{
+    "username": "amitf",
+    "ratings":[
+        { "movieId": 101, "rating": 5 },
+        { "movieId": 102, "rating": 4 },
+        { "movieId": 103, "rating": 3 }     
+    ]
+}
+
+
+
+Raw Data For Movies:
+----------------------------
+
+{
+    "title": "Men In Black",
+    "imageUrl": "http://localhost:3000/meninblack.jpg",
+    "releaseYear": 2010,
+    "casts": [
+        { "firstName": "Alex", "lastName": "Browning" },
+        { "firstName": "Anna", "lastName": "Parker" }
+    ]
+}
+
+{
+    "title": "Titanic",
+    "imageUrl": "http://localhost:3000/titanic.jpg",
+    "releaseYear": 2010,
+    "casts": [
+        { "firstName": "Leonardo", "lastName": "Dcapreo" },
+        { "firstName": "Kate", "lastName": "Winslet" }
+    ]
+}
+
+
+{
+    "title": "Avenger",
+    "imageUrl": "http://localhost:3000/avenger.jpg",
+    "releaseYear": 2009,
+    "casts": [
+        { "firstName": "Bob", "lastName": "Martin" },
+        { "firstName": "Kathy", "lastName": "Sierra" }
+    ]
+}
+
+  
+Raw Data for UserRating:
+--------------------------------
+
+{
+    "userId": "alexB",
+    "ratings": [
+        { "movieId": 1, "rating": 4 },
+        { "movieId": 4, "rating": 5 },
+        { "movieId": 7, "rating": 5 }
+    ]
+} 
+
+
+Spring Cloud:
+-----------------
+  1) Eureka Server
+  2) Config Server
+  3) API Gateway (Zuul)
+  4) Hystrix
+
+Eureka Server:
+--------------------
+
+Why Hard coded URLs are bad?
+---------------------------------------
+-- Change in URL requires code updates.
+-- If we deploy our application on any cloud provider like AWS, GCP etc..., we will get dynamic URLs.
+-- Load Balancing
+-- Based on environments, URLs will be different. (dev, test/QA, prod)
+
+Service Discovery Pattern:
+----------------------------------
+   a) Client-side service discovery
+   b) Server-side service discovery
+
+Steps:
+-----------
+a) We need to start the Eureka Server
+b) Have microservices register themeselves to Eureka Server using Eureka Client
+c) Have microservices locate (consume) other microservices using Eureka Client.
+
+By default port number of Eureka Server is 8761
+
+-- Technology to implement service discovery pattern that Spring cloud uses is "Eureka"
+
+Netflix Open Source:
+
+  a) Eureka is one of the projects that made open source thanks to netflix
+  b) Netflix has bunch of libraries and later they madet them open source
+
+++++++++++++++++++++++++++++++++
+
+-- In spring cloud, client side service discovery is used.
+
+
+        <dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
+
+       <dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+-- Create a new Spring Boot project as "eureka-server".
+-- Add eureka server dependency.
+
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
+
+-- Add @EnableEurekaServer annotation to main class.
+-- Add below properties in application.properties file.
+
+server.port=8761
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+
++++++++++++++++++++++++++++++++++
+
+-- Add eureka client dependency in all services (movie-info-service, movie-catalog-service, user-rating-service)
+
+       <dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+-- Add @EnableEurekaClient in main class of all services (movie-info-service, movie-catalog-service, user-rating-service).
+
+-- Add spring.application.name property in application.properties file of all services.
+
+++++++++++++++++++++++++++++++++++
+
+-- Start Eureka server first
+-- Then start all services (movie-info-service, movie-catalog-service, user-rating-service) one by one.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Q. Can we change Eureka port?
+---------------------------------------
+-- Yes
+
+* In application.properties of Eureka server:
+
+server.port=9090
+
+* In all client services, we have to add one property in application.properties file
+
+eureka.client.service-url.defaultZone=http://localhost:9090/eureka/
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+
+Feign client:
+-----------------
+
+   -- Wrapper over RestTemplate
+   -- Declarative style
+   -- Internal load balancing
+   -- Support Circuit Breaker
+
+
+-- Add dependencies:
+
+                              <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+                              <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+		</dependency>
+
+-- Add feign clients
+
+package com.training.moviecatalogservice.feignclient;
+
+@FeignClient(name="movie-info-service")
+@RibbonClient(name="movie-info-service")
+public interface MovieInfoServiceProxy {
+
+	@GetMapping("/api/v1/movies/{movieId}")
+	public ResponseEntity<Movie> getMovieDetails(@PathVariable int movieId); 
+}
+
+---------------------------
+
+package com.training.moviecatalogservice.feignclient;
+
+@FeignClient(name="user-rating-service")
+@RibbonClient(name="user-rating-service")
+public interface UserRatingServiceProxy {
+	
+	@GetMapping("api/v1/ratings/{userId}")
+	public ResponseEntity<UserRating> getMovieRatings(@PathVariable String userId);	
+		
+}
+
+-----------------------------
+
+-- Add annotation @EnableFeignClients in main class.
+
+@SpringBootApplication
+@EnableEurekaClient
+@EnableFeignClients("com.training.moviecatalogservice.feignclient")
+public class MovieCatalogServiceApplication {
+   .....
+}
+
+-- Feign client uses Ribbon as load balancer.
+   
+-----------------------------
+
+Config Server:
+------------------
+
+Centralized Configuration: [Config Server]
+
+Why Centralized Configuration?
+----------------------------------------
+
+When we talk about microservices architecture, we visualize a large number of small microservices talking to each other.
+The interesting part is that each of these microservices can have its own configuration.
+
+Such configuration includes details such as:
+
+Application configuration
+logging configuration
+Database configuration
+Communication Channel Configuration - messaging queues and other infrastructure
+URLs of other microservices to talk to
+In addition, each microservice would have a separate configuration for different environments, such as development, qa and production.
+
+* Spring Boot provides feature "Profiling".
+
+dev
+prod
+test
+
+* What else if configuration changes.?
+-- If configuration changes, We need to update application.properties file. We need to rebuild, repackaged, redeploy our application. [All running instances of that application we need to redeploy with the new changes].
+
+Solution:
+-----------
+
+Configuration for all microservices (for all environments) is stored at one place - a centralized configuration store.
+When a microservice needs its configuration, it provides an id at launch - a combination of microservice name and the environment.
+
+The centralize config server looks up the configuration and provides the configuration to the microservice.
+
+Setup Config Server:
+
+1) Create a new Spring boot starter project
+2) Add the dependencies:   config-server and eureka-discovery-client
+
+                              <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-server</artifactId>
+		</dependency>
+                             <dependency>
+                               	<groupId>org.springframework.cloud</groupId>
+	                              <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+                             </dependency>
+
+3) Add annotation @EnableConfigServer and @EnableEurekaClient on the top of main class.
+4) Update application.properties file of config server. Specify the path where configurations are kept
+
+    server.port=8888
+
+    spring.profiles.active=native 
+   (Because you’re using the filesystem for storing application configuration information, you need to tell Spring Cloud configuration server to run with the     “native” profile)
+
+    spring.cloud.config.server.native.search-locations=file:///C:\\AmitF\\Training_Docs\\Spring_Training_Feb\\config\\{application}
+  
+  The important parameter in the configuration entry is the searchLocations attribute. This attribute provides a comma separated list of the directories for     each application that’s going to have properties managed by the configuration server.
+ 
+
+5) Add config-client dependency in all services.
+
+                              <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+
+6) Remove application.properties file from all services and add bootstrap.properties 
+  
+     We need to add below tag in pom.xml under <build> tag. [ Optional Step ]
+
+    		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>*.properties</include>
+					<include>common-config/</include>
+				</includes>
+			</resource>
+		</resources>   
+
+7) Update bootstrap.properties file and specify the location of config server.
+
+    spring.cloud.config.discovery.enabled=true
+    spring.cloud.config.discovery.serviceId=config-server
+    spring.cloud.config.uri=http://config-server
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+1) Custom proeprties and consume in application
+2) Feign client response to exception 
+3) Protecting application.properties access.
+4) Generate documentation for all services at once using Swagger.
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+* SERVING CONFIGURATION FROM GIT SUBPATHS
+
+-- If you want to store configuration files in subpath instead of root path of git repo, we can configure it with below   
+   property. For eg. You have created "config" folder in root path of git repo.   
+   
+   spring.cloud.config.server.git.search-paths = config 
+
+-- you can have Config Server serve from multiple paths by listing them, separated by commas
+
+   spring.cloud.config.server.git.search-paths = config, moreConfig 
+
+-- spring.cloud.config.server.git.search-paths = config, more*
+
+   Config Server will serve configuration from /config as well as any subdirectory whose name begins with “more.”    
+   
+-- The spring.cloud.config.server.git.default-label property overrides the default label or branch.
+   
+   spring.cloud.config.server.git.default-label = new-feature     
+
+
+-- Spring Cloud Bus
+
+* Spring Cloud Bus:
+
+-- Application when started reads configuration from config server, if we make any changes after microservices have run, then
+   we have to restart the services.
+-- Spring Cloud Bus helps us to push configuration changes to all microservices while they are running.
+-- Microservices do not need to be restarted to receive these updated configuration changes and to use these updated 
+   configurations.
+-- To use Spring Cloud bus, we don't need to create a separate standalone microservice. We have to just add 2 dependencies, 
+   spring cloud bus and actuators to config server and add spring cloud bus dependency to all microservices.   
+-- Microservices act as subscribers/listeners to receive updates from Spring cloud config server.
+-- Messaging technology is used to broadcast all the changes to all microservices. 
+-- Protocol use in communication is AMQP (Advanced Message Queuing Protocol). Asynchronous messaging.
+-- Message Broker need to be configured, RabbitMQ. It is an intermediary for messaging. It gives common platform to send and 
+   receive messages and for messages a safe place to live until they are received.
+-- We have to make configuration so that all microservices will be subscribed for configuration updates, Spring cloud bus can 
+   broadcast configuration changes and all our microservices will be able to recieve those changes.
+
+http://localhost:8888/actuator/bus-refresh
+POST request
+   
+   
+* Add Dependencies:
+
+-- spring cloud bus amqp
+-- actuators
+
+
+* Broadcast the changes:
+
+-- Once we update configuration in git repo, we need to tell spring cloud bus that its time to broadcast configuration changes
+   all microservices that have subscribed to these udpates.
+-- We can do this by sending http post request to an actuator endpoint called /bus-refresh.
+-- This will make spring cloud server to load new configuration from git repo and it also makes spring cloud bus to broadcast 
+   these configuration changes to all subscribed microservices.
+-- /bus-refresh endpoint helps to clear the refresh scope cache and rebind configuration properties in our microservices.
+-- Enable /bus-refresh endpoint.
+-- management.endpoints.web.exposure.include=bus-refresh in application.properties of config server.
+
+
+* Install and run RabbitMQ server
+
+-- 
+
+* For our application to communicate with spring cloud bus and spring cloud bus to communicate with all our microservices, 
+  Both need to connect to RabbitMQ.
+
+-- application.properties of config server.
+
+    spring.rabbitmq.host = localhost
+    spring.rabbitmq.port = 5672
+    spring.rabbitmq.username = guest
+    spring.rabbitmq.password = guest
+
+-- Add to all microservices.	
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Hystrix 
+Zuul API Gateway
+Securely stored passwords in properties file.
+
+1) Hystrix (Circuit Breaker Pattern):
+---------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

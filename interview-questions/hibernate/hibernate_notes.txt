@@ -1,0 +1,997 @@
+Hibernate:
+
+-- ORM (Object Relational Mapping) Framework. 
+-- Every application is mainly divided into 3 layers / logics:
+     a) Presentation layer / logic   => UI
+     b) Business Logic / Layer
+     c) Data logic / Layer 
+
+-- Hibernate is basically used to write persistent layer logic (Data layer logic).
+
+Why ORM frameworks / Tools?
+-----------------------------------
+
+-- Boiler-plate code in JDBC.
+    
+       -> Opening connectio with database
+       -> Creating Query
+       -> Creating PreparedStatement object
+       -> Execute the query and get the result
+       -> Process the result
+       -> Close all the resource.
+    
+-- We should keep Database structure in mind while writing JDBC code. If database table schema changes, you have to modify JDBC code as well.
+
+-- Mandatory to handle checked exception i.e. SQLException.  
+
+-- In Java application, data is in the form of objects. Data is also transferred within an application in the form of objects. 
+   To store objects into database , Object => Text.
+   To retrieve objects from database,  Text => Object 
+ 
+    1)
+     Employee employee = new Employee(101, "Alex Browning", "HR", 23000);
+     
+     insert into employees values(?, ?, ?, ?);
+     
+     statement.setInt(1, employee.getId());
+     statement.setString(2, employee.getName());
+     statement.setString(3, employee.getDepartment());
+     statement.setInt(4, employee.getSalary());
+
+    2) 
+        select * from employees where id=101;                   | 101 | Alex Browning | HR | 23000 |
+
+        ResultSet rs = statement.executeQuery();
+        int id = rs.getInt(1);          
+        String name = rs.getString(2);
+        String department = rs.getString(3); 
+        int salary = rs.getInt(4);
+
+         Employee employee = new Employee(id, name, department, salary);        
+
+-- SQL queries are database dependents.  If we change our database, we have to change queries in JDBC code.
+
+-- Programmer / developer has to manage resources explicitly (closing connection, statement, result set objects etc...)
+
+
+Major benefits of ORM tools / frameworks:
+-------------------------------------------------------
+
+-- All ORM tools / frameworks use JDBC internally to talk to databases.
+
+1) Data transfer is in the form of objects.
+2) Persistent logic is independent of the database.
+
+
+What is Object Relational Mapping (ORM) ?
+------------------------------------------------------
+
+ Employee employee = new Employee(101, "Alex Browning", "HR", 23000);
+ session.save(employee);
+
+Employee employee = session.get(Employee.class, 101);
+
+
+=> ORM frameworks / tools provide abstraction layer over JDBC technology (core technology).
+
+
+ORM Tools (Hibernate):
+---------------------------
+
+Advantages of Hibernate:
+
+-- Automatic creation of schema.
+-- Inheritance mapping.
+-- Association mapping.
+-- Caching support.
+-- Unchecked Exceptions.
+-- Hibernate Query Languages. (HQL). -  Queries are database independents.
+-- Versioning and Timestamp.
+   Versioning   => How many times data is updated in database
+   Timestamp  => When the data is updated last time (It stores timestamp of recent updation of data).
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+JDBC API => Specification
+
+Database Vendors => Implementations.  (Jar files)
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Java Persistent API (JPA)    => Specification
+
+Hibernate  => JBoss   
+iBatis        => Apache
+TopLink     => Oracle Corp.
+Object Java Bean => Apache
+Java Data Object => Apache
+
+-- These all ORM frameworks provide abstraction layer over JDBC.
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Maven:
+
+-- Build Tool.
+-- Build lifecycle of Software.
+
+
+-- Source Code  => Compile Main Classes => Test Source Code => Compile Test Classes => Executing Test cases => Generate Test Reports => Package => Deploy 
+
+-- Managing dependencies.
+-- Provides standard project directory structure.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Bootstrapping Hibernate Application:
+
+CRUD Operations for Single Object:
+---------------------------------------
+
+  --  For saving an object into database.
+  
+       1) public Serializable save(T object)  => Returns Primary key value.
+       2) void persist(object)   => Does not return Primary key value.
+
+  -- Retieve object from database.
+
+      1) get(Type, Primary_key) => If record does not exist, it will return null. Eager loading.
+      2) load(Type, Primary_key) => If record does not exist, we get  "org.hibernate.ObjectNotFoundException". Lazy loading.
+
+  -- Delete an object from database.
+
+      1) Create a new object, set its primary key and pass it to delete() method.
+      2) Object is already available in session and pass that object to delete() method. 
+
+ -- Update an object
+
+      1) We can update an object directly if it is in persistent state.
+      2) call update(object) method
+      3) saveOrUpdate(object)  => If object does not exist, it will add to the database table, else it will update it.
+
+  Persistent life cycle:
+  ---------------------------
+
+   An object has 3 different states:
+
+    1) Transient
+    2) Persistent
+    3) Detached
+
+      Session session = HibernateUtil.getSession();
+
+      Employee employee = new Employee(101, "Alex", "HR", 34000);   // Transient state
+ 
+      session.save(employee);      // Persistent state
+
+      session.close();
+   
+  ++++++++++++++++++++++++++++++++++++++++
+
+    Employee employee = session.get(Employee.class, 101);   // Persistent state
+    Employee employee2 = session.get(Employee.class, 102);  // Persistent state
+    
+    session.evict(employee);     // Detached state
+
+    session.clear();  
+
+  +++++++++++++++++++++++++++++++++++++++++
+
+   Employee employee = new Employee();   // Transient
+   employee.setId(101);
+
+   session.delete(employee);       // Persistent state
+
+  +++++++++++++++++++++++++++++++++++++++++   
+
+
+Component Mapping:
+------------------------
+
+ HAS-A relationship (Containment) 
+
+ public class Customer {
+
+     private Address address;
+ }   
+
+ public class Address {
+
+      private String street;
+      private String state;
+      private String city;
+      private String country;
+      private int zipcode;
+ }	
+  
+ @Embeddable: Specifies a class whose instances are stored as an intrinsic part of an owning entity and share the identity of the entity.Each of the persistent properties or fields of the embedded object is mapped to the database table for the entity. 
+ @Embedded: 
+
+  @ElementCollection  => Specifies collection of instances of Embeddable type.
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Inheritance Mapping:
+
+   1) Single Table
+   2) Table per concrete class 
+   3) Table per subclass (Joined)
+
+  Payment:
+     1) ChequePayment
+     2) CardPayment
+
+
+   public abstract class Payment {
+        
+           private int id;
+           private double amount;
+           private LocalDate date;
+
+   }
+
+   public class ChequePayment {
+
+          private String type;
+          private int chequeNo;
+   }
+
+   public class CardPayment {
+      
+         private long cardNo;
+         private int expiryMonth;
+         private int expiryYear;          
+  }
+
+
+a) interitance_mapping_single_table:
+------------------------------------------------
+
+@Entity
+@Table(name = "payments") 
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "payment_type", discriminatorType = DiscriminatorType.STRING)
+public class Payment {
+
+	@Id
+	@Column(name = "payment_id")
+	private int paymentId;
+	private double paymentAmount;
+	private LocalDate paymentDate;
+
+}
+
+
+@DiscriminatorValue("card")
+@Entity
+public class CardPayment extends Payment {
+	
+	private long cardNo;
+	private int expiryMonth;
+	private int expiryYear;
+
+}
+
+
+@DiscriminatorValue("cheque")
+@Entity
+public class ChequePayment extends Payment {
+
+	private String chequeType;
+	private int chequeNo;
+
+}
+
+public class TestPayment {
+	
+	public static void main(String[] args) {
+		
+//		CardPayment payment = new CardPayment(101, 1500, LocalDate.now(), 1111222233334444L, 3, 2023);
+//		ChequePayment payment2 = new ChequePayment(102, 2000, LocalDate.now(), "Bearer", 12345);
+		
+		Session session = HibernateUtil.getSession();
+//		Transaction tx = session.beginTransaction();
+		
+//		session.save(payment);
+//		session.save(payment2);
+		
+//		tx.commit();
+		
+		// Retrieve payment object.
+		
+		Payment payment = session.get(Payment.class, 101);
+		System.out.println(payment.getClass().getName());
+		
+		System.out.println(payment.getPaymentId() + " - " + payment.getPaymentAmount() + " - " + payment.getPaymentDate());		
+		
+		if (payment instanceof ChequePayment) {
+			ChequePayment chequePayment = (ChequePayment) payment;
+			System.out.println(chequePayment.getChequeNo() + " - " + chequePayment.getChequeType());
+		}
+		else if (payment instanceof CardPayment) {
+			CardPayment cardPayment = (CardPayment) payment;
+			System.out.println(cardPayment.getCardNo() + " - " + cardPayment.getExpiryMonth() + "/" + cardPayment.getExpiryYear());
+		}
+		
+		session.close();
+		HibernateUtil.closeSessionFactory();
+
+	}
+}
+
+
+b) inheritance_mapping_table_per_concrete_class:
+------------------------------------------------------------------
+
+@Entity
+@Table(name = "payments")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class Payment {
+
+	@Id
+	@Column(name = "payment_id")
+	private int paymentId;
+	private double paymentAmount;
+	private LocalDate paymentDate;
+
+}
+
+
+@Entity
+@Table(name = "cardpayments")
+public class CardPayment extends Payment {
+	
+	private long cardNo;
+	private int expiryMonth;
+	private int expiryYear;
+
+}
+
+
+@Entity
+@Table(name = "chequepayments")
+public class ChequePayment extends Payment {
+
+	private String chequeType;
+	private int chequeNo;
+
+
+}
+
+public class TestPayment {
+	
+	public static void main(String[] args) {
+		
+//		CardPayment payment = new CardPayment(101, 1500, LocalDate.now(), 1111222233334444L, 3, 2023);
+//		ChequePayment payment2 = new ChequePayment(102, 2000, LocalDate.now(), "Bearer", 12345);
+		
+		Session session = HibernateUtil.getSession();
+//		Transaction tx = session.beginTransaction();
+		
+//		session.save(payment);
+//		session.save(payment2);
+		
+//		tx.commit();
+		
+		CardPayment payment = session.get(CardPayment.class, 101);
+		System.out.println(payment.getPaymentId() + " - " + payment.getPaymentAmount() + " - " + payment.getPaymentDate()
+		                   + " - " + payment.getCardNo() + " - " + payment.getExpiryMonth() + "/" + payment.getExpiryYear());
+		
+		ChequePayment payment2 = session.get(ChequePayment.class, 102);
+		System.out.println(payment2.getPaymentId() + " - " + payment2.getPaymentAmount() + " - " + payment2.getPaymentDate()
+                                                         + " - " + payment2.getChequeNo() + " - " + payment2.getChequeType());
+		
+		session.close();
+		HibernateUtil.closeSessionFactory();
+
+	}
+}
+
+
+c) inheritance_mapping_table_per_subclass:
+----------------------------------------------------------
+
+@Entity
+@Table(name = "payments")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Payment {
+
+	@Id
+	@Column(name = "payment_id")
+	private int paymentId;
+	private double paymentAmount;
+	private LocalDate paymentDate;
+
+}
+
+@Entity
+@Table(name = "cardpayments")
+public class CardPayment extends Payment {
+	
+	private long cardNo;
+	private int expiryMonth;
+	private int expiryYear;
+
+}
+
+
+@Entity
+@Table(name = "chequepayments")
+public class ChequePayment extends Payment {
+
+	private String chequeType;
+	private int chequeNo;
+
+}
+
+public class TestPayment {
+	
+	public static void main(String[] args) {
+		
+//		CardPayment payment = new CardPayment(101, 1500, LocalDate.now(), 1111222233334444L, 3, 2023);
+//		ChequePayment payment2 = new ChequePayment(102, 2000, LocalDate.now(), "Bearer", 12345);
+		
+		Session session = HibernateUtil.getSession();
+//		Transaction tx = session.beginTransaction();
+		
+//		session.save(payment);
+//		session.save(payment2);
+		
+//		tx.commit();
+		
+		CardPayment payment = session.get(CardPayment.class, 101);
+		System.out.println(payment.getPaymentId() + " - " + payment.getPaymentAmount() + " - " + payment.getPaymentDate()
+		                   + " - " + payment.getCardNo() + " - " + payment.getExpiryMonth() + "/" + payment.getExpiryYear());
+		
+		ChequePayment payment2 = session.get(ChequePayment.class, 102);
+		System.out.println(payment2.getPaymentId() + " - " + payment2.getPaymentAmount() + " - " + payment2.getPaymentDate()
+                                                           + " - " + payment2.getChequeNo() + " - " + payment2.getChequeType());
+		
+		session.close();
+		HibernateUtil.closeSessionFactory();
+
+	}
+}
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+Hibernate Query Language (HQL) and Criteria API 
+
+-- IN hibernate, we can perform following operations 
+       1) SIngle row operation
+       2) Bulk opertations.
+
+-- Bulk operations can be performed using:
+      1) Hibernate Query Language.
+      2) Criteria API.  => Only for select operations
+      3) Native SQL.
+
+In JDBC -   select emp_id, name, department, salary from employees;
+
+In HQL -  select  id, name, department, salary from Employee;
+
+-- We can use HQL to perform select and non-select operations. (BULK INSERT operation)
+
+SELECT 
+UPDATE
+DELETE
+
+SELECT * FROM employees;        =>    FROM Employee;  (Selecting complete object)
+
+SELECT employee_id, name FROM employees;    => SELECT id, name FROM Employee;
+
+
+1) Positional Parameters  ?
+2) Named Parameters  	
+
+SELECT name, department FROM employees;   // NOt retrieving complete Employee object. (Partial object) 
+
+UPDATE employees SET salary = salary + 2000 WHERE department = 'HR';
+
+UPDATE Employee SET salary = :newSalary WHERE department = :dept
+
+ 
+-- IN HQL, we have 2 methods.
+ 
+     For select operation:      List getResultList()
+     For DML Operation:        int executeUpdate()
+
+@Entity
+@Table(name = "employees")
+public class Employee {
+
+	@Id
+	@Column(name = "employee_id")
+	private int id;	
+	private String name;
+	private String department;
+	private double salary;
+
+}
+
+public class TestEmployee {
+
+	public static void main(String[] args) {
+		
+		Session session = HibernateUtil.getSession();
+		Transaction tx = session.beginTransaction();
+		
+		Employee alex = new Employee(101, "Alex Browning", "HR", 34000);
+//		Employee anna = new Employee(102, "Anna Parker", "ADMIN", 45000);
+		Employee adam = new Employee(103, "Adam Bash", "HR", 12000);
+//		Employee kathy = new Employee(104, "Kathy Sierra", "ADMIN", 32000);
+		
+		session.save(alex);    
+//		session.save(anna);
+		session.save(adam);
+//		session.save(kathy);
+		
+		tx.commit();
+		
+		// Retrieve All Employee objects from database.
+		
+//		Query<Employee> query = session.createQuery("FROM Employee");
+//		Query<Employee> query = session.createQuery("FROM Employee WHERE department=:dept");
+//		query.setParameter("dept", "HR");
+//		Query<Employee> query = session.createQuery("FROM Employee ORDER BY salary DESC");
+		
+//		Query<Employee> query = session.createQuery("FROM Employee WHERE salary>=:s AND department=:dept");
+//		query.setParameter("s", 20000.0);
+//		query.setParameter("dept", "HR");
+//		
+//		List<Employee> employees = query.getResultList();
+//		
+//		for (Employee employee: employees) {
+//			System.out.println(employee);
+//		}
+
+		// Retrieving partial data
+		
+//		Query<Object[]> query = session.createQuery("SELECT name, department, salary FROM Employee");
+//		
+//		List<Object[]> data = query.getResultList();
+//		
+//		for (Object [] d: data) {
+//			System.out.println(d[0] + " - " + d[1] + " - " + d[2]);
+//		}
+		
+//		Query<String> query = session.createQuery("SELECT name FROM Employee");	
+//		
+//		
+//		List<String> names = query.getResultList();
+//		
+//		for (String name: names) {
+//			System.out.println(name);
+//		}
+		
+//		Query<Integer> query = session.createQuery("UPDATE Employee SET salary=salary+:amount WHERE department=:dept");
+//		query.setParameter("amount", 2000.0);
+//		query.setParameter("dept", "HR");
+		
+//		Query<Integer> query = session.createQuery("DELETE FROM Employee WHERE department=:dept");
+//		query.setParameter("dept", "HR");
+		
+//		Transaction tx = session.beginTransaction();
+		
+//		int rowCount = query.executeUpdate();
+//		System.out.println("Total no. of rows deleted: " + rowCount);
+		
+//		tx.commit();
+		session.close();
+		HibernateUtil.closeSessionFactory();
+		
+	}
+}
+
+public class TestEmployee2 {
+	
+	public static void main(String[] args) {
+		
+		Session session = HibernateUtil.getSession();
+		
+		// 1. Create CriteriaBuilder object by calling getCriteriaBuilder() method of session
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		
+		// 2. Create a query object by creating an instance of CriteriaQuery.
+//		CriteriaQuery<Employee> query = builder.createQuery(Employee.class);
+		
+		// 3. Set the query Root by calling from() method on CriteriaQuery object to define range of variables in the FROM clause.
+		
+//		Root<Employee> root = query.from(Employee.class);
+		
+		// 4. Specify what the type of the result will be by calling select() method of CriteriaQuery.
+		
+//		query.select(root);
+//		query.select(root).where(builder.equal(root.get("department"), "HR"));
+//		query.select(root).where(builder.lessThan(root.get("salary"), 20000.0));
+//		query.select(root).where(builder.like(root.get("name"), "A%"));
+//		query.select(root).where(builder.greaterThan(root.get("salary"), 20000), builder.equal(root.get("department"), "HR"));
+		
+		// 5. Prepare query for execution
+		
+//		Query<Employee> q = session.createQuery(query);
+//		
+//		List<Employee> employees = q.getResultList();
+//		
+//		for (Employee employee: employees) {
+//			System.out.println(employee);
+//		}
+		
+//		CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
+//		Root<Employee> root = query.from(Employee.class); 
+		
+//		query.multiselect(root.get("name"), root.get("department"));
+//		query.multiselect(root.get("name"), root.get("department")).where(builder.greaterThan(root.get("salary"), 20000.0));
+		
+//		Query<Object[]> q = session.createQuery(query);
+		
+//		List<Object[]> data = q.getResultList();
+//		
+//		for (Object []d: data) {
+//			System.out.println(d[0] + " - " + d[1]);
+//		}
+		
+//		CriteriaQuery<String> query = builder.createQuery(String.class);
+//		Root<Employee> root = query.from(Employee.class);
+//		
+//		query.select(root.get("name"));
+//		
+//		Query<String> q = session.createQuery(query);
+//		List<String> names = q.getResultList();
+//		
+//		for (String name: names) {
+//			System.out.println(name);
+//		}
+		
+		// Find total no. of employees
+//		CriteriaQuery<Long> query = builder.createQuery(Long.class);
+//		Root<Employee> root = query.from(Employee.class);
+//		
+//	    query.select(builder.count(root));
+//	    
+//		Query<Long> q = session.createQuery(query);
+//		long totalEmployees = q.getSingleResult();
+//		System.out.println("Total no. of employees = " + totalEmployees);
+		
+//		CriteriaQuery<Double> query = builder.createQuery(Double.class);
+//		Root<Employee> root = query.from(Employee.class);
+		
+//		query.select(builder.max(root.get("salary")));
+//		query.select(builder.min(root.get("salary")));
+//		query.select(builder.avg(root.get("salary")));
+		
+//		Query<Double> q = session.createQuery(query);
+//		double maxSalary = q.getSingleResult();
+//		System.out.println("Maximum salary: " + maxSalary);
+		
+		CriteriaQuery<Employee> query = builder.createQuery(Employee.class);
+		Root<Employee> root = query.from(Employee.class);
+		
+		query.select(root);
+		query.orderBy(builder.desc(root.get("salary")));
+		
+		Query<Employee> q = session.createQuery(query);
+		List<Employee> employees = q.getResultList();
+		
+		employees.forEach(System.out :: println);
+		
+		session.close();
+		HibernateUtil.closeSessionFactory();
+		
+	}
+}
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Criteria API is for select operation where we can select data based on varous criterias / conditions.
+
+
+WHERE department IN [ "HR", "ADMIN" ]
+WHERE salary > 12000 AND department='HR'
+WHERE name LIKE 'A%'
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Associations:
+
+ 1) One-To-One         =>  @OneToOne
+
+
+
+ 2) One-To-Many       =>  @OneToMany
+
+-- We can implement one to many by using 3 different ways.
+
+1st Approach:
+--------------------
+
+@Entity
+@Table(name = "carts")
+@Data @NoArgsConstructor 
+public class Cart {	
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "cart_id")
+	private int id;
+	private double amount;
+	@OneToMany(cascade=CascadeType.PERSIST)     // By default, Eager loading but we can use fetch=FetchType.LAZY
+	private List<Product> products;
+
+              public Cart(double amount, List<Product> products) {
+		super();
+		this.amount = amount;
+		this.products = products;
+	}
+
+	public int getAmount() {
+		
+		int total = 0;
+		for (Product product: products) {
+			total += product.getPrice(); 
+		}
+		
+		return total;
+	}
+}
+
+@Entity
+@Table(name = "products")
+@Data
+@NoArgsConstructor
+public class Product {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "product_id")
+	private int id;
+	private String name;
+	private int price;
+
+	public Product(String name, int price) {
+		super();
+		this.name = name;
+		this.price = price;
+	}
+
+}
+
+-- In this approach, It is uni-directional association (From Cart => Product).
+-- How many tables created?
+   => 3 tables    a) carts   b) products   c)  carts_products
+      
+-- We can customize 3rd mapping table.
+    @JoinTable(name = "cart_product", joinColumns=@JoinColumn(name = "cart_id"), inverseJoinColumns=@JoinColumn(name = "product_id"))
+
+2nd Approach (Reverse Relationship but uni-directional):
+-------------------------------------------------------------------------
+
+Reverse Relationship (Uni-directional):  From Product => Cart
+
+
+@Entity
+@Table(name = "carts")
+@Data 
+public class Cart {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "cart_id")
+	private int id;
+	private int amount;
+		
+}
+
+
+@Entity
+@Table(name = "products")
+@Data
+@NoArgsConstructor
+public class Product {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "product_id")
+	private int id;
+	private String name;
+	private int price;
+	@ManyToOne(cascade=CascadeType.PERSIST)
+              @JoinColumn(name = "cart_id")
+	private Cart cart;
+
+	public Product(String name, int price) {
+		super();
+		this.name = name;
+		this.price = price;
+	}
+}
+
+Q. How many tables created?
+=> Only 2 tables created  a) carts   b) products
+
+
+3rd Approach (Bi-directional):
+--------------------------------------
+
+Bi-directional   From cart => product and product => cart
+
+
+@Entity
+@Table(name = "carts")
+@Data 
+public class Cart {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "cart_id")
+	private int id;
+	private int amount;
+	@OneToMany(cascade=CascadeType.PERSIST)
+	private List<Product> products;
+	
+	public int getAmount() {
+		int total = 0;
+		for (Product product: products) 
+			total += product.getPrice();
+		return total;
+	}		
+}
+
+
+@Entity
+@Table(name = "products")
+@Data
+@NoArgsConstructor
+public class Product {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "product_id")
+	private int id;
+	private String name;
+	private int price;
+	@ManyToOne
+              @JoinColumn(name = "cart_id") 
+	private Cart cart;
+
+	public Product(String name, int price) {
+		super();
+		this.name = name;
+		this.price = price;
+	}
+}
+
+
+Q. How many tables created?
+=> 3 tables    a) carts   b) products  c) carts_products      [ There is no need to create carts_products table because cart_id is already there in products tables. ]
+
+Q> How to avoid creating 3rd table?
+=> Using mappedBy 
+
+@Entity
+@Table(name = "carts")
+@Data 
+public class Cart {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name = "cart_id")
+	private int id;
+	private int amount;
+	@OneToMany(cascade=CascadeType.PERSIST, mappedBy="cart")
+	private List<Product> products;
+	
+	public int getAmount() {
+		int total = 0;
+		for (Product product: products) 
+			total += product.getPrice();
+		return total;
+	}		
+}
+
++++++++++++++++++++++++++++++++++++++++
+ 3) Many-To-One       =>  @ManyToOne 
++++++++++++++++++++++++++++++++++++++++
+ 4) Many-To-Many     =>  @ManyToMany
+
++++++++++++++++++++++++++++++++++++++++
+ Person => Vehicle 
+
+First command prompt, execute below steps:
+
+> mysqld --initialize-insecure
+
+> mysqld --console
+
+In second command prompt, execute below steps:
+
+> mysql -u root 
+
+You will be connected to mysql server. Then you have to set password for "root" user, so execute below command.
+
+> alter user 'root'@'localhost' identified by 'root'
+
+> exit 
+
+> mysql -u root -p
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Q. How to create custom generator in Hibernate?
+=> 
+
+ 1) Create a class that implements IdentifierGenerator interface and provide implementation to generate() method.
+
+public class CustomIdGenerator implements IdentifierGenerator {
+
+	@Override
+	public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
+		
+		Random random = new Random();
+		int value = random.nextInt(100);
+		LocalTime time = LocalTime.now();
+		return value + time.getMinute() + time.getSecond() + time.getNano();		 
+	}
+
+}
+
+Q. How to use custom generator?
+=>  
+
+@Entity
+@Table(name = "customers")
+@Data  
+public class Customer {
+
+	@Id
+	@Column(name = "customer_id")
+	@GenericGenerator(name = "my-id-generator", strategy = "com.training.util.CustomIdGenerator")
+	@GeneratedValue(generator = "my-id-generator")
+	private int id;
+	private String name;
+	private String address;
+	private List<Vendor> vendors;
+}
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+    
+
+
