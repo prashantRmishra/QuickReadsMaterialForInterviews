@@ -1,0 +1,480 @@
+﻿System design
+Difference between thin and thick client 
+In client-server architecture when logical manipulations or the processing sits on the server-side it is called a thick client and when the logic or processing sits on the client side it is called a thin client.
+
+
+
+
+An example of thin clients is Netflix or amazon prime videos.
+An example of thick clients is Microsoft outlook or video editing software where most processing is happening on the client-side only
+
+
+Proxies (think of it as on behalf)
+
+
+
+
+  
+
+Forward proxies:
+In forward proxies, the client’s request is sent to the proxy server, and that proxy server is responsible for redirecting the request to the desired server.
+So, it acts as the middleman that does the job on behalf of the client.
+Advantages : 
+Bypassing the rules to access the website blocked by the organizations.
+Being anonymous on the internet.
+Reverse Proxy :
+In reverse proxy, the proxy server becomes the single point of contact for the clients 
+The client talks to the proxy server and the actual servers remain anonymous.
+Advantages:
+It can be used for traffic control.
+Used for load balancing 
+It can also be used for caching the response from the server.
+Also very useful when you want to mitigate the DDoS attack as your servers are not accessible or exposed to the outer world.
+It can also be used for SSL encryption
+
+
+
+
+The disadvantage of the proxy server
+If it fails it becomes the single point of failure or bottleneck
+
+
+
+
+Data and Data flow:
+  
+
+
+
+Datastores
+  
+
+
+
+Data generation:
+User
+Internal (ex: profile generated based on watch history of the user on Netflix app)
+Different types of systems
+  
+
+
+
+Database types:
+Relational DB (you already know everything about it)
+Nonrelational DB (Redis stored in key-value pair)
+Document DB (they can support heavy reads and writing) 
+        They have collections and documents where collections can be considered as tables and documents can be considered as rows.
+        It has no fixed schema 
+        Example mongo DB
+        Instead of storing values in different tables, we can store them in one collection in
+        Document-based DB 
+        Example:
+        User_details:[
+        Id:234,
+        Name: ‘prashant Mishra’
+        Address:[
+                Area:’dummy area’,
+                City:’thane’,
+                state’Maharastra’
+                country:’India’
+],
+Department:[
+        id:’departmentId’,
+        name:’departmentName’,
+        Locations:’department locations’
+]
+]
+
+
+
+
+        
+
+
+Downsides of using document based DB:
+You don’t have schema so, you might have null or empty values in your documents. 
+They do not provide asset transactions so, you may have to handle that in your code.
+
+
+Column DB:
+They are sort of mid-way between relational DB and document DB.
+They don’t provide asset transactions
+Used when you have requirements of heavy write.
+They do not support heavy read but they support special kind of read.
+        Because the column in column DB is designed based on what kind of music the user      
+        Liked
+
+
+User
+	Songs
+	songsLikedByUser
+	UsersByLikedSongs
+	
+
+
+
+They are good supporters of distributed databases.
+Examples: music applications where data or music are suggested based on user taste etc.
+Examples of column-based DB are Cassandra, Hbase
+Search Databases:
+Most useful when searching for data is required by the applications. For example, searching for flights and searching for trains, searching a book.
+Example elastic, solar.
+The critical thing to note here is that the primary data is not stored in search databases
+
+
+  
+
+
+
+
+
+Anatomy of applications and their services:
+Applications and services fulfill certain responsibilities
+Factors to keep in mind while designing applications or services
+  
+
+
+
+Applications programming interface (APIs): 
+Advantages of using APIs: 
+Communications
+Abstractions: only the endpoint is exposed so callee wouldn’t know how the endpoint does its job.
+Platform independent: support for all sorts of front-end and backend applications written in different languages.
+
+
+Different types of APIs
+Private APIs: Hidden APIs:
+A private API is an application programming interface that has its application hosted with in-house developers.
+The goal of a private API program is to enable internal developers who are building new applications that leverage existing systems
+
+
+Public APIs: expose to all public, made publicly available to software developers        
+
+
+Web APIs:  A web API is an application programming interface for either a web server or a web browser.
+SDK/Library API
+
+
+
+
+Standart for writing APIs
+RPC
+SOAP
+REST
+
+
+Caching
+Avoiding recomputations of response from DB or any other storage system caching is used.
+In caching in cache the response of the request and if the same request comes we can fulfill the request from the cache itself avoiding the computation.
+We will have to keep time to live or expire date for the response that has been cached in the cache.
+For example, if a website keeps track of no. of users that have visited the website 
+So, we can keep the TTL as 10min (say), then if the same request comes within 10 min the same response was cached earlier and can be given back.
+The disadvantage of doing this would be the no. of users increased drastically within a span of 10 min then also the user will see the same response which would be stale data, not fresh data at all.
+So, this is a non-deterministic problem and the solution to this problem totally depends on the use case of the application.
+To solve this, we can increase or decrease the ttl. So, once the ttl have been expired, for the same request cache miss will happen and the request will go to the DB and new entry will be added to the cache and the response will be given back to the user. But this will increase the cache miss rate and overall increase the burden on the server for processing and computing the response from the DB.
+Or, we can auto-update the response in the cache from the server side itself. In this way cache, a miss will not happen. For this, in order to add a new or updated entry in the cache, we will have to delete another entry to make or create space in the cache. We can use various cache replacement policies like FIFO, LRU, RR, etc.
+
+
+
+
+Cache pattern:
+Cache aside pattern:
+Cache always talks to the application and never to the Db.
+For example to find the daily active user's applications/server talks to the DB if the result is already not present in the cache and the result is cached in the cache. 
+And to update the cached result or cache evictions either TTL or on the update of DB value logic is written on the server-side that updates the fresh value or a combination of both TTL and server logic can be used .
+This hole strategy where the cache never talks to the DB is called the cache aside strategy.
+  
+
+
+
+
+
+Advantages of this pattern: 
+If the cache goes down in that case as well the applications can keep serving the data.
+Disadvantage of using this pattern:
+Deciding the TTL or expiry time of the data in the cache and writing logic to autoupate the result  in the cache when data expiry happens.
+
+
+Read through pattern: 
+  
+
+Application never talks to the DB only cache talks to the DB.
+So, for the first request, there will be a cache miss, and after that, there will be a cache hit for the same request if it comes.
+
+
+Write through pattern:
+It is similar to read-through the pattern,
+Data will be written to the cache and from the cache, the data will be updated to the DB.
+Disadvantage of the write-through cache is it adds an extra layer of latency ie first data will be written in the cache and then it will be updated in the DB.        
+
+
+Write around pattern:
+  
+Applications write directly to the DB, but reads from the cache.
+It save one trip for updating the data in the cache as it directly updated the data in the DB.
+And for reading as well only one layer of access is required ie is from the cache layer. 
+
+
+Write back strategy or write back pattern:
+Batching all the writes on the cache and then updating all at once in DB.
+Used when you have write heavy workload.
+This pattern can handle db failure for some time.
+But the downside is if the cache goes down all the accumulated write will be lost.
+
+
+
+
+  
+
+
+
+
+
+
+
+Where is cache located:
+At browser level/app
+Proxy level
+Application level or outside application level (the different patterns that we saw are at this level)
+With the DB, etc.
+
+
+What is rest 
+Client-server
+Cacheable
+Layered
+Stateless
+Uniform interface
+Code on demand (server could send code to the client that should execute on runtimes like java applets or javascript)
+
+
+Message queue 
+Asynchronous communication:
+
+
+Simple example would be you getting a token at the bank and asking to wait till you token is called, this is a most generic example of async communication where your requests are not being served immediately.
+
+
+In tech stack there are various tools to achieve async communication like Kafka, RabbitMQ, etc.
+
+
+  
+
+
+
+  
+
+
+
+
+
+Pub Sub Messaging
+  
+
+
+
+Message broker comes between input and output in the above image.
+It divides the messages into many topics.
+  
+
+
+
+
+
+Publish subscribe usecase
+Asynchronous workflow
+Decoupling
+Load balancing
+Deferred processing
+Data streaming
+
+
+
+
+
+
+Perfomance matrics
+
+
+Consider an example of notes taking app. You have made crud api for it, now the performance matric for it will be following.
+Performance matric of the application:
+1. Api response time: how much time does the app take to give a response to a certain request given to it?
+2. Throughput of the API: This means how many requests it can handle in a given amount of time.
+3. Error Occurance: How much error it is producing, how many edge cases it is able to handle.
+4. Bugs/defects in the code: if a certain request is making your application crash then your application is not resilient enough.
+Performance matric of the DATABASE:
+1. Time taken by various database queries
+2. Throughput: No. of queries executed per unit time
+Performace matric of cache:
+1. Latency of writing to cache: Time taken to write to cache should be as less as possible
+2. A number of cache eviction and invalidation: whenever new keys are written to the cache and old keys are getting evicted or invalidated, if the cache eviction is happening at a good rate then it's good.
+3. Memory of cache: If a large no of keys are to be written to the cache then the size of the cache should be increased accordingly.
+Performance matric of a message queue: 
+1. Rate of production and consumption: The speed with which you can put messages in the queue and speed with which you can pull messages from the queue (This is related to the throughput of the messaging queue)
+2. Fraction of stale and unprocessed messages: if some messages in the queue are failed to be processed, messages that are not consumed for a very long time and are there in the queue unconsumed.
+3. Number of consumers affects the bandwidth and throughput: If the no. of consumers is more then the throughput will be more, but if the no. of consumers are less then bandwidth will be underutilized and the throughput of consuming messages will be less.
+Performance matric of server: 
+1. Eventually your application runs on some hardware of cloud, so no. of resources it uses example CPU usage, ram usage, etc.
+
+
+PERFORMANCE MATRIC TOOLS
+EXAMPLES OF PERFORMANCE MATRIC TOOLS ARE
+NURALINK, DATADOG, VIVIDCORTEX, ETC.
+
+
+FAULT AND FAILURE:
+The cause of failure is fault
+For Example: db crashed because of which the required data was not served to the user.
+Faults are unavoidable but we can have fault-tolerant and fail-safe mechanisms
+Fault tolerant : It means even if the fault occurs it will not affect the system overall.
+Example : if one instance of the db crashed we can have another instance of the db that will also have the same data and data can be fetched from this db and a request can be served.
+Fail safe: if we can not avoid the fault we should mitigate its effect that is we should fail gracefully :)
+Example: if the request could not be processed at the backend because of some fault, then a user-friendly message should be shown to the user instead of UI malfunctioning.
+
+
+Scaling
+Vertical scaling: Increasing the capacity of the currently available resource is called Vertical scaling.
+Horizontal scaling: Increasing the number of resources is called Horizontal scaling.
+
+
+Building a scalable system means handling more customers
+Ie.
+Increased load should be handled
+It should not be complex
+Performace should not take a hit rather it should be increased
+
+
+—--------------------------------------------
+Lets take an example: You have an application called “app”
+Initially ‘app’ can serve 1k user.
+Let say after a month users are expected to increase 4 times ie 4k.
+You have two options now :
+VERTICAL SCALING: You increased the ram, cpu( let say you update it from dual core to hexacore) capacity of the server. Now you are able to serve 4k requests easily.
+But Vertical scaling has a limit i.e there is a limit to which you can upgrade the server configuration for db, server, cache, worker, etc. But after a certain upgradation further upgradation may not be possible.
+Hence vertical scaling comes into the picture.
+HORIZONTAL SCALING:  You add more instances of the server, more instances of db, etc.
+But this can come at a price, also management of a horizontally scaled system could become complex.
+Hence it usually depends on the requirement of the organization to what sort of scale it needs to serve its user base.
+A good blend of vertical and horizontal scaling could go a long way.
+
+
+DATABASE REPLICATION
+We use database replication to increase the availability of the data across various parts of the world if we are serving international customers.
+
+
+In database replication, there is a primary database and other replications are called secondary databases.
+
+
+There are various ways to achieve this data replication
+Synchronous data replication: 
+Let’s say the primary database has property x = 1, it is replicated on all the secondary databases.
+Now update request comes to the primary database which makes x =5, then in synchronous replication, all the secondary databases are updated with x=5, and these secondary databases give acknowledgment of successful data updated to the primary database. Upon receiving the ack from all the secondary databases. The primary database finally acknowledges the update request.
+In this way, data consistency is maintained across all the database replications.
+Advantage:
+No inconsistency of data across all the replications.
+Disadvantage:
+The update will have to wait till all the replications have the same updated value.
+Note: Asynchronous replication follows a read-after-write policy to maintain data consistency.
+Asynchronous Replication:
+The primary database does not wait for the ack from all other secondary databases. It sends ack back to update operation once the data has been updated in the primary database.
+Advantage:
+No wait is required for data to be updated in all the secondary databases.
+Disadvantage:
+It may lead to data inconsistency if one of the secondary databases failed to update the same value as that of the primary database.
+Semi-asynchronous replication:
+The primary database waits only for one ack from the secondary database, and sends update ack back to update operation.
+
+
+Note: There is a trade-off between selecting the replication strategy
+For Example: if you want faster replication you might have to compromise on the consistency of the data.
+If you want the consistency of the data you will have to compromise on the performance.
+Hence it depends on the use case like what sort of replication technique will be best suited for you.
+
+
+CAP(Consistency, Availability, and Partitioning)
+In Order to understand this properly Please refer to yogita sharma’s video about CAP concep (https://www.youtube.com/watch?v=pSoKUfLTe8Y&list=PLTCrU9sGyburBw9wNOHebv9SjlE4Elv5a&index=19) This is highly recommended.
+Please refer to these videos.
+
+
+Consider there are two databases one primary and the second a secondary database
+All these databases have the consistency of data 
+So this would be called a state where the system is highly consistent and highly available( Due to multiple replicas of the database.)
+Now, these different databases are deployed on different servers that are scattered around the globe.
+And these databases communicate with each other in order to keep the data consistent.
+If the network between two databases fails then they won’t be able to communicate with each other(This is called Partition) and that will result in data inconsistency.
+In Order to have Partition tolerance one of the databases needs to be shut down. By doing this we will have consistency in the database (whichever one is active) but this will result in loss of availability ( as initially, data was available in two different databases now due to shut down of one of the database data will be available in only one database Hence the loss of availability).
+
+
+
+
+Cap theorem (https://youtu.be/kwCFHLbIhak?list=PLTCrU9sGyburBw9wNOHebv9SjlE4Elv5a)
+—-----------------
+Consistency
+  
+
+Availability
+  
+
+
+
+
+
+Partition Tolerance
+  
+
+
+
+Eventual consistency
+In Eventual consistency the system eventually becomes consistent after some time ( this is called the partition tolerance recovery mechanism)
+
+
+Let’s say databases A and B are connected through a network and this network broke down (resulting in the partition). 
+During the partition, databases A and B will be available even though they might give inconsistent data. Here we are relying on the partition recovery mechanism that once the partition is over( network between A and B is restored) the databases A  and B will reconcile and eventually they will start giving out consistent data.
+Consider the example of youtube view count.
+You are looking at the same video on your laptop as well as on your phone and initially, the view count is different on both the devices for the same video but that tolerable. 
+But after some time maybe after an hour or so, you will find that the view count on the laptop as well as on the phone is close to the same ( This is nothing but a recovery mechanism from the partition tolerance). 
+So choosing between this consistency and availability is purely use-case based.
+For example, we can’t have inconsistency in Bank transactions, we must have consistency hence we compromise on availability. (remember sometimes ATMs are not working, and official bank websites are down. But your account balance is always consistent).
+
+
+Tweaking partition tolerance
+Since partition tolerance occurs due to network failure between two nodes, can have backup networks. So, If one network fails we can switch to backup netwok 2 , if that fails we can switch to backup network 3 and so on.
+Disadvantage of having multiple backup network:
+1. Cost of managing these networks would be huge hence it totally depends on the organization if they can afford such measure or not.
+
+
+
+
+Database sharding
+
+
+Suppose initially you db has 1k users data, then users are increasing day by day and even after increasing the capacity of the database it is still not big enough to store the details of all the new users.
+A good approach would be to use partitioning the data that is storing the data in multiple database across different or same locations.
+Sharding is nothing but partitioning
+Virtical sharding: 
+We divide the table based on column and store say one column in one db, another in another db so on and so forthe
+Horizontal sharding:
+We divide the table row wise say we store 1 million rows in one db, another one million in different db so on an so forthe.
+Sharding can be logical and physical.
+Lets say dataset of 4 gb is divided into 4 parts (1 gb each) So, basically we have created 4 logical shards of the dataset
+Lets say we have 2 database with us of 2 gb each 
+This is called physical sharding..
+Now we can store two logical partitions of 1 gb each in one physical partition. 
+This way physically partitioned database has logically partitioned datasets.
+
+
+Advantages of database sharding:
+1. Search is optimized , we will know the id of the data that we want to search then we will check in which partition the id falls and we will search only that partition.
+Disadvantages:
+Sharding should be considered last resort to improve the performance of the application.
+Its one way road once you have sharded then its very difficult to come back to non sharded architecture. 
+
+
+1. Algorithmic sharding
+If the app has a function using which it can find out which partition to search data into then this  approach is called Algorithmic sharding.
+2. Dynamic sharding
+There is one another module or service which tells where the requests need to be routed to.
+The app will ask this module and the module will determine where the request will go.
+
+
+How do you decide on what basis you want to shard your dataset present in the database.
