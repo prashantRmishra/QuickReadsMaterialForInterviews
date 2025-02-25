@@ -1,3 +1,31 @@
+## In Short How autoconfiguration works ?
+
+requires @EnableAutoConfiguration annotation or @SpringBootApplication( i.e @Configuration + @ComponentScan  + @EnableAutoConfiguration)
+- feature that quickly starts the app with minimal manual configuration
+- automatically configures bean based on class path dependencies(Hence if spring-boot-starter-web dependency is present then spring autoconfigures embedded tomcat server and DispatcherServlet), annotation and default settings: 
+- all the autoconfiguration logic is present under a single jar called spring-boot-autoconfigure.jar, it has important file called meta-inf/spring.factories that detects all the autoconfiguration, it has list of autoconfiguration classes that should be enabled under EnableAutoconfiguration key
+
+- imp autoconfiguration are listed below example are: 
+```
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.springframework.boot.autoconfigure.aop.AopAutoConfiguration,\
+org.springframework.boot.autoconfigure.MessageSourceAutoConfiguration,\
+org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration,\
+org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration,\
+org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,\
+org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration,\
+```
+
+@JdbcTemplate > its bean is already configured and managed by spring container
+@RestTemplate > same as above
+
+
+Customization: Exclude auto-configurations, override beans, create custom auto-config
+Example Auto-Configured Components: DataSource, DispatcherServlet, KafkaTemplate, RestTemplate
+
+---
+## Detailed explanation: 
+
 ### **Spring Boot Auto-Configuration (Interview Perspective)**
 Spring Boot's **Auto-Configuration** is a key feature that enables applications to start with minimal manual configuration. It automatically configures beans based on classpath dependencies, annotations, and default settings.
 
